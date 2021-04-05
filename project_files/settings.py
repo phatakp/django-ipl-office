@@ -83,6 +83,18 @@ DATABASES = {
     }
 }
 
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'phatakp$iploffice2021',
+        'USER': os.getenv("DBUSER"),
+        'PASSWORD': os.getenv("DBPWD"),
+        'HOST': os.getenv("DBHOST"),
+        'OPTIONS': {
+            'init_command': "SET sql_mode='STRICT_TRANS_TABLES'"
+        }
+    }
+}
 
 # Password validation
 # https://docs.djangoproject.com/en/3.1/ref/settings/#auth-password-validators
