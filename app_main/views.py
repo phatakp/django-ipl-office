@@ -111,11 +111,11 @@ class DashboardView(LoginRequiredMixin, ListView):
 
     def get_queryset_paginator(self, queryset, page_obj):
         if page_obj == 'user_page':
-            user_paginator = Paginator(queryset, 3)
+            user_paginator = Paginator(queryset, 10)
             user_page_num = self.request.GET.get(page_obj)
             return self.get_page_objects(user_paginator, user_page_num)
         if page_obj == 'pred_page':
-            bet_paginator = Paginator(queryset, 3)
+            bet_paginator = Paginator(queryset, 10)
             bet_page_num = self.request.GET.get(page_obj)
             return self.get_page_objects(bet_paginator, bet_page_num)
 

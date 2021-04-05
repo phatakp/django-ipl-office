@@ -26,8 +26,10 @@ def update_bet_details(bet, team):
     bet.save(update_fields=['bet_amt', 'bet_team', 'create_time'])
 
     reduce_from_user(bet.user, amt=10)
-    Static.objects.get(
-        entry='Pool-Amount').update(value=F('value')+10)
+    static_ = Static.objects.get(
+        entry='Pool-Amount')
+    static_.value = F('value')+10
+    static_.save(update_fields=['value'])
 # Insert into Bet table
 
 
@@ -51,8 +53,11 @@ def validate_and_save_bet(user, match, team):
 
             # New amount should atleast be double of existing bet amount
             bet = Bet.objects.get(user=user, match=match)
-            update_bet_details(bet, team)
-            return f"Changed Prediction: {team.name}", True
+            if bet.bet_team != team:
+                update_bet_details(bet, team)
+                return f"Changed Prediction: {team.name}", True
+            else:
+                return f"Already predicted winner as {team.name}", False
         else:
             return f"Past cutoff for Prediction change", False
 

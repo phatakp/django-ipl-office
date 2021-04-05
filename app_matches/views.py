@@ -150,9 +150,6 @@ class MatchDetailView(LoginRequiredMixin, DetailView):
                          'home_bat1st_chances': self.win_chances(self.object.home_team, self.object.away_team),
                          'home_bat2nd_chances': self.win_chances(self.object.home_team, self.object.away_team, bat_first=False),
                          }
-        match_bets = self.bets()
-        extra_context.update(
-            {'match_bets': self.get_queryset_paginator(match_bets)})
 
         if request.user.is_ipl_admin:
             # Match Winner Update Process
@@ -195,6 +192,10 @@ class MatchDetailView(LoginRequiredMixin, DetailView):
                                                 self.object, team)
             extra_context.update({'message': msg,
                                   'msg_status': 'success' if status else 'danger'})
+
+        match_bets = self.bets()
+        extra_context.update(
+            {'match_bets': self.get_queryset_paginator(match_bets)})
 
         context.update(extra_context)
         return render(request, self.template_name, context)
@@ -248,7 +249,7 @@ class MatchDetailView(LoginRequiredMixin, DetailView):
                                                                         'bet_team').order_by('create_time')
 
     def get_queryset_paginator(self, match_bets):
-        paginator = Paginator(match_bets, 2)
+        paginator = Paginator(match_bets, 10)
         page = self.request.GET.get('page')
 
         try:

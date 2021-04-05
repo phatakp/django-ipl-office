@@ -72,4 +72,4 @@ def on_page(counter, page):
     if not page:
         page = 1
 
-    return (page-1) * 3 + counter
+    return (page-1) * 10 + counter
