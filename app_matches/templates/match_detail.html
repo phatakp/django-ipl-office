@@ -1,0 +1,489 @@
+{% extends '_base.html' %}
+{% load static %}
+{% load index %}
+{% load crispy_forms_tags %}
+
+{% block title %}
+{{match}}
+{% endblock title %}
+
+{% block stylesheet %}
+<link href="{% static 'css/detail.css' %}" rel="stylesheet" />
+{% endblock stylesheet %}
+
+{% block content %}
+{% include '_navbar.html' %}
+
+<!-- Match Heading Bar -->
+<section class="detail-section">
+    <div class="detail-navbar">
+        <div class="page-heading-bg">
+            <img src="{% static 'img\iplgeneric.svg' %}" aria-hidden="true">
+        </div>
+        <div class="container-fluid">
+            <div class="match-heading">
+
+                {% if match.num < 57 %}
+                <div class="match-num">Match {{match.num}}</div>
+                {% else %}
+                <div class="match-num">IPL 2021 - {{match.get_typ_display}}</div>
+                {% endif %}
+                <div class="match-venue">{{match.venue}}</div>
+                <div class="match-dttime">
+                    <span class="match-date">{{match.datetime|date:"D j M"}}</span>
+                    <span>
+                        <hr></span>
+                    <span class="match-time">{{match.datetime|time:"h:i A"}}</span>
+                </div>
+                <div class="match-teams">
+                    <div class="match-team">
+
+                        {% if match.home_team %}
+                        <div class="team-name team1">{{match.home_team.name}}</div>
+                        <img src="{{match.home_team.logo.url}}" class="img-fluid">
+                        {% else %}
+                        <div class="team-name team1">TBC</div>
+                        <img src="{% static 'img/small-logo/tbc.png' %}" class="img-fluid">
+                        {% endif %}
+
+
+                    </div>
+                    <span class="versus">vs</span>
+                    <div class="match-team">
+                        {% if match.away_team %}
+                        <img src="{{match.away_team.logo.url}}" class="img-fluid" />
+                        <div class="team-name team2">{{match.away_team.name}}</div>
+                        {% else %}
+                        <img src="{% static 'img/small-logo/tbc.png' %}" class="img-fluid">
+                        <div class="team-name team1">TBC</div>
+                        {% endif %}
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+    </div>
+</section>
+
+
+<section class="detail-info">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12">
+
+                {% if match.is_scheduled %}
+
+                <!-- Bet Form -->
+                <div class="filter-card">
+
+                    {% if match.isWithinTime %}
+
+                    <div class="filter-head">
+                        <i class="fab fa-product-hunt"></i>
+                        <span class="filter-text">Match Prediction</span>
+                    </div>
+                    <div class="filter-teams">
+
+                        <form id="bet_form" method="POST">
+                            {% csrf_token %}
+                            <div class="mid">
+                                <div>Select <span><i class="fas fa-angle-down"></i></span>
+                                </div>
+
+                                <label class="switch">
+                                    <input class="switch-input" type="checkbox" />
+                                    <span class="switch-label" data-on="{{match.away_team.name}}"
+                                        data-off="{{match.home_team.name}}" style="--hfg:{{match.home_team.fore_color}};
+                                --hbg:{{match.home_team.back_color}}; --afg:{{match.away_team.fore_color}};
+                                --abg:{{match.away_team.back_color}};"></span>
+                                    <span class="switch-handle"></span>
+                                </label>
+                                <input type="hidden" name="team-name" value={{match.home_team.name}} />
+                            </div>
+
+                            <div class="filter-team">
+                                {{form.bet_amt|as_crispy_field}}
+                            </div>
+                            <input type="submit" class="btn" name="bet-form" value="Submit" />
+                        </form>
+                    </div>
+                    {% else %}
+                    <div class="filter-head">
+                        <i class="fas fa-rupee-sign"></i>
+                        <span class="filter-text">Cutoff Passed for Prediction</span>
+                    </div>
+                    {% endif %}
+                    {% if message %}
+                    <div class="message">
+                        <div class="text-{{msg_status}}">{{message|safe}}</div>
+                    </div>
+                    {% endif %}
+                </div>
+
+                <!-- Winner Form -->
+                {% if user.is_ipl_admin %}
+                <div class="filter-card">
+
+                    <div class="filter-head">
+                        <i class="fas fa-rupee-sign"></i>
+                        <span class="filter-text">Match Winner Update</span>
+                    </div>
+                    {% if win_message %}
+                    <div class="win-message">
+                        <div class="text-{{win_msg_status}}">{{win_message}}</div>
+                    </div>
+                    {% endif %}
+                    <div class="filter-teams">
+
+                        <form method="POST">
+                            {% csrf_token %}
+                            <div class="filter-team admin">
+                                {{winner_form.winner|as_crispy_field}}
+                                {{winner_form.result|as_crispy_field}}
+                                {{winner_form.home_team_score|as_crispy_field}}
+                                {{winner_form.away_team_score|as_crispy_field}}
+                                <input type="submit" class="btn" name="winner-form" value="Submit" />
+                            </div>
+
+                        </form>
+                    </div>
+
+                </div>
+
+                {% endif %}
+                {% else %}
+
+                <div class="filter-card">
+                    <div class="filter-head">
+
+                        {% if match.winner %}
+                        <span><img src="{{match.winner.slogo.url}}" class="img-fluid" alt=""><span
+                                class="filter-text">{{match.result}}</span></span>
+                        {% else %}
+                        <span><span class="filter-text">{{match.result}}</span></span>
+                        {% endif %}
+
+                    </div>
+                </div>
+
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <!-- Team Stats Table -->
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-6 col-sm-12">
+                <div class="info-div">
+                    <div class="col-md-12">
+                        <h2 class="title">Team Stats</h2>
+                        {% if match.home_team %}
+                        <div class="table-responsive">
+                            <table class="table w-auto text-nowrap">
+                                <thead>
+                                    <tr class="rows darken-4 text-center">
+                                        <th class="colm-1" style="color:{{match.home_team.back_color}};">
+                                            {{match.home_team.name}}<img class="team-slogo img-fluid"
+                                                src="{{match.home_team.slogo.url}}"></th>
+                                        <th class="colm-2"></th>
+                                        <th class="colm-3" style="color:{{match.away_team.back_color}};"><img
+                                                class="team-slogo img-fluid"
+                                                src="{{match.away_team.slogo.url}}">{{match.away_team.name}}</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+
+                                    <tr class="rows combined">
+                                        <td colspan="3">Overall</td>
+                                    </tr>
+
+                                    <tr class="rows">
+                                        <td class="colm-1">{{match.home_team.total_win_pct}}</td>
+                                        <td class="colm-2">Total Win %</td>
+                                        <td class="colm-3">{{match.away_team.total_win_pct}}</td>
+                                    </tr>
+
+                                    <tr class="rows">
+                                        <td class="colm-1">{{match.home_team.home_win_pct}}</td>
+                                        <td class="colm-2">Home Win %</td>
+                                        <td class="colm-3">{{match.away_team.home_win_pct}}</td>
+                                    </tr>
+
+                                    <tr class="rows">
+                                        <td class="colm-1">{{match.home_team.away_win_pct}}</td>
+                                        <td class="colm-2">Away Win %</td>
+                                        <td class="colm-3">{{match.away_team.away_win_pct}}</td>
+                                    </tr>
+
+                                    <tr class="rows">
+                                        <td class="colm-1">{{match.home_team.bat1st_win_pct}}</td>
+                                        <td class="colm-2">Bat First Win %</td>
+                                        <td class="colm-3">{{match.away_team.bat1st_win_pct}}</td>
+                                    </tr>
+
+                                    <tr class="rows combined">
+                                        <td colspan="3">Head to Head</td>
+                                    </tr>
+
+                                    <tr class="rows">
+                                        <td class="colm-1">{{home_total_wins}}</td>
+                                        <td class="colm-2">Total Win %</td>
+                                        <td class="colm-3">{{home_total_wins|minus100}}</td>
+                                    </tr>
+
+                                    <tr class="rows">
+                                        <td class="colm-1">{{home_home_wins}}</td>
+                                        <td class="colm-2">Home Win %</td>
+                                        <td class="colm-3">{{home_away_wins|minus100}}</td>
+                                    </tr>
+
+                                    <tr class="rows">
+                                        <td class="colm-1">{{home_away_wins}}</td>
+                                        <td class="colm-2">Away Win %</td>
+                                        <td class="colm-3">{{home_home_wins|minus100}}</td>
+                                    </tr>
+
+                                    <tr class="rows">
+                                        <td class="colm-1">{{home_bat1st_wins}}</td>
+                                        <td class="colm-2">Bat First Win %</td>
+                                        <td class="colm-3">{{away_bat1st_wins}}</td>
+                                    </tr>
+
+
+                                    <tr class="rows combined">
+                                        <td colspan="3">Form Guide</td>
+                                    </tr>
+
+                                    <tr class="rows">
+                                        <td class="colm-1">
+
+                                            {% for form in home_form_all  %}
+
+                                            {% if form.winner == match.home_team %}
+                                            <div class="won"></div>
+                                            {% else %}
+                                            <div class="lost"></div>
+                                            {% endif %}
+
+                                            {% endfor %}
+
+                                        </td>
+                                        <td class="colm-2">Last 5 overall</td>
+                                        <td class="colm-3">
+                                            {% for form in away_form_all  %}
+
+                                            {% if form.winner == match.away_team %}
+                                            <div class="won"></div>
+                                            {% else %}
+                                            <div class="lost"></div>
+                                            {% endif %}
+
+                                            {% endfor %}
+
+                                        </td>
+                                    </tr>
+                                    <tr class="rows">
+                                        <td class="colm-1">
+
+                                            {% for form in vs_form  %}
+
+                                            {% if form.winner == match.home_team %}
+                                            <div class="won"></div>
+                                            {% else %}
+                                            <div class="lost"></div>
+                                            {% endif %}
+
+                                            {% endfor %}
+
+                                        </td>
+                                        <td class="colm-2">Last 5 Head to Head</td>
+                                        <td class="colm-3">
+                                            {% for form in vs_form  %}
+
+                                            {% if form.winner == match.away_team %}
+                                            <div class="won"></div>
+                                            {% else %}
+                                            <div class="lost"></div>
+                                            {% endif %}
+
+                                            {% endfor %}
+
+                                        </td>
+                                    </tr>
+
+                                    {% if match.is_scheduled %}
+                                    <tr class="rows combined">
+                                        <td colspan="3">Win Chances</td>
+                                    </tr>
+                                    <tr class="rows">
+                                        <td class="colm-1" style="color:{{match.home_team.back_color}};">
+                                            {{home_bat1st_chances}}%</td>%</td>
+                                        <td class="colm-2">If Batting First</td>
+                                        <td class="colm-3" style="color:{{match.away_team.back_color}};">
+                                            {{home_bat1st_chances|minus100}}%</td>
+                                    </tr>
+                                    <tr class="rows">
+                                        <td class="colm-1" style="color:{{match.home_team.back_color}};">
+                                            {{home_bat2nd_chances}}%</td>
+                                        <td class="colm-2">If Batting Second</td>
+                                        <td class="colm-3" style="color:{{match.away_team.back_color}};">
+                                            {{home_bat2nd_chances|minus100}}%</td>
+                                    </tr>
+                                    {% else %}
+                                    <tr class="rows">
+                                        
+                                        {% if match.home_team_score %}
+                                        <td class="colm-1" style="color:{{match.home_team.back_color}};">
+                                            {{match.home_team_score}} overs</td>
+                                        {% else %}
+                                        <td class="colm-1" style="color:{{match.home_team.back_color}};">-</td>    
+                                        {% endif %}
+                                        
+                                        <td class="colm-2">Score</td>
+                                        
+                                        
+                                        {% if match.away_team_score %}
+                                        <td class="colm-3" style="color:{{match.away_team.back_color}};">
+                                            {{match.away_team_score}} overs</td>
+                                        {% else %}
+                                        <td class="colm-3" style="color:{{match.away_team.back_color}};">-</td>    
+                                        {% endif %}
+                                            
+                                        
+                                    </tr>
+                                    {% endif %}
+                                </tbody>
+                            </table>
+
+                        </div>
+                        {% endif %}
+                    </div>
+
+                </div>
+            </div>
+            <!-- Match Bets Table -->
+            <div class="col-md-6 col-sm-12">
+                <div class="info-div">
+                    <div class="col-md-12">
+                        <h2 class="title">Match Predictions</h2>
+
+                        {% if match.home_team %}
+                        <div class="table-responsive">
+                            <table class="table w-auto text-nowrap">
+                                <thead>
+                                    <tr class="rows darken-4 text-center">
+                                        <th class="colm-1">Player</th>
+                                        <th class="colm-2">Team</th>
+                                        <th class="colm-3">Points</th>
+                                        <th class="colm-4">Status</th>
+
+                                        {% if match.status == 'S' %}
+                                        <th class="colm-5">Time</th>
+                                        {% else %}
+                                        <th class="colm-5">Result</th>
+                                        {% endif %}
+
+
+                                    </tr>
+                                </thead>
+                                <tbody>
+
+                                    {% for bet in match_bets %}
+
+
+                                    <tr class="rows">
+                                        <td class="colm-1">{{bet.user.name}}</td>
+
+                                        {% if bet.bet_team %}
+                                        <td class="colm-2 tname" style="color:{{bet.bet_team.back_color}};">
+                                            {{bet.bet_team.name}}</td>
+                                        {% else %}
+                                        <td class="colm-2">-</td>
+                                        {% endif %}
+
+                                        <td class="colm-3">{{bet.bet_amt}}</td>
+                                        <td class="colm-4">{{bet.get_status_display}}</td>
+
+                                        {% if match.is_scheduled and bet.is_not_placed %}
+                                        <td class="colm-5">-</td>
+                                        {% elif match.is_scheduled %}
+                                        <td class="colm-5">
+                                            {{bet.create_time|date:"M-j"}} {{bet.create_time|time:"H:i"}}</td>
+                                        {% elif bet.is_won %}
+                                        <td class="success colm-5">+{{bet.win_amt|floatformat:2}}</td>
+                                        {% elif bet.is_lost_or_default %}
+                                        <td class="danger colm-5">-{{bet.lost_amt|floatformat:2}}</td>
+                                        {% else %}
+                                        <td class="colm-5">0</td>
+                                        {% endif %}
+
+                                    </tr>
+                                    {% if match.isWithinBetCutoff %}
+                                     <tr class="rows">
+                                        <td colspan=5>Other predictions TBD past {{cutoff|time:"h:i A"}} IST on Match day</td>
+                                    </tr>   
+                                    {% endif %}
+                                    {% empty %}
+                                    <tr class="rows">
+                                        <td colspan=5>No predictions made yet</td>
+                                    </tr>  
+                                    {% endfor %}
+                                    
+                                    
+                                    {% if match.is_abandoned %}
+                                      <tr class="rows">
+                                        <td colspan=5 class="text-success">All points for this match moved to IPL kitty</td>
+                                    </tr>  
+                                    {% endif %}
+                                        
+                                        
+                                </tbody>
+                            </table>
+                            {% if match_bets %}
+                            <nav aria-label="Page navigation example">
+                                <ul class="pagination pagination-template d-flex justify-content-center">
+                                    {% if match_bets.has_previous %}
+                                    <li class="page-item"><a href="?page={{match_bets.previous_page_number}}"
+                                            class="page-link text-secondary"> <i class="fa fa-angle-left"></i></a></li>
+                                    <li class="page-item"><a href="?page={{match_bets.previous_page_number}}"
+                                            class="page-link text-secondary">{{ match_bets.previous_page_number }}</a></li>
+                                    {% else %}
+                                    <li class="page-item"><a href="#" class="page-link text-default disabled"> <i
+                                                class="fa fa-angle-left"></i></a>
+                                    </li>
+                                    {% endif %}
+                                    <li class="page-item"><a href="#"
+                                            class="page-link active text-white"><strong>{{ match_bets.number }}</strong>
+                                            <span class="sr-only">(current)</span></a></li>
+                                    {% if match_bets.has_next %}
+                                    <li class="page-item"><a href="?page={{match_bets.next_page_number}}"
+                                            class="page-link text-secondary">{{ match_bets.next_page_number }}</a></li>
+                                    <li class="page-item"><a href="?page={{match_bets.next_page_number}}"
+                                            class="page-link text-secondary"> <i class="fa fa-angle-right"></i></a></li>
+                                    {% else %}
+                                    <li class="page-item"><a href="#" class="page-link text-default disabled"> <i
+                                                class="fa fa-angle-right"></i></a>
+                                    </li>
+                                    {% endif %}
+                                </ul>
+
+                            </nav>
+                            {% endif %}
+                        </div>
+                        {% endif %}
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+{% endblock content %}
+
+{% block extra-scripts %}
+<script src="{% static 'js/details.js' %}"></script>
+{% endblock extra-scripts %}

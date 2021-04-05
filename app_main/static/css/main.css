@@ -1,0 +1,523 @@
+.main-section {
+    width: 100%;
+    height: 80vh;
+}
+
+/* sorry remove dot before img */
+.logobg {
+    position: absolute;
+    top: 20%;
+    left: 10%;
+    /* opacity: 0.8; */
+}
+
+.logobg.RCB {
+    width: 12em;
+    height: 15em;
+}
+
+.logobg.CSK {
+    width: 15em;
+    height: 15em;
+}
+
+.logobg.DC {
+    width: 15em;
+    height: 15em;
+}
+
+.logobg.KKR {
+    width: 12em;
+    height: 16em;
+}
+
+.logobg.PBKS {
+    width: 13em;
+    height: 16em;
+}
+
+.logobg.MI {
+    width: 17em;
+    height: 18em;
+}
+
+.logobg.RR {
+    width: 16em;
+    height: 16em;
+}
+
+.logobg.SRH {
+    width: 16em;
+    height: 15em;
+}
+
+.teamimage {
+    position: absolute;
+    right: 0;
+    /* for image reflection */
+    -webkit-box-reflect: below 2px linear-gradient(transparent, transparent, rgba(0, 0, 0, 0.4));
+}
+
+.teamimage.RCB {
+    width: 55em;
+    height: 30em;
+}
+
+.teamimage.CSK {
+    margin-top: 2em;
+    width: 50em;
+    height: 35em;
+}
+
+.teamimage.DC {
+    margin-top: 5em;
+    width: 50em;
+    height: 30em;
+}
+
+.teamimage.KKR {
+    margin-top: 7em;
+    width: 50em;
+    height: 29em;
+}
+
+.teamimage.PBKS {
+    margin-top: 5em;
+    width: 55em;
+    height: 29em;
+}
+
+.teamimage.MI {
+    margin-top: 5em;
+    width: 50em;
+    height: 29em;
+}
+
+.teamimage.RR {
+    margin-top: 2em;
+    width: 50em;
+    height: 44em;
+    right: 10%;
+}
+
+.teamimage.SRH {
+    margin-top: 5em;
+    width: 50em;
+    height: 30em;
+}
+
+
+.main-container .heading {
+    position: absolute;
+    top: 50%;
+    display: flex;
+    flex-direction: column;
+    width: 35%;
+    margin-left: 10em;
+}
+
+.main-container .heading h1 {
+    padding-bottom: 1em;
+    font-size: 3em;
+    font-weight: 600;
+    font-family: 'Dosis', sans-serif;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+
+}
+
+.main-container .heading h1.CSK {
+    background: -webkit-linear-gradient(rgb(126, 124, 18), rgb(194, 87, 11));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.main-container .heading h1.DC {
+    background: -webkit-linear-gradient(rgb(14, 41, 161), rgb(175, 8, 8));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.main-container .heading h1.KKR {
+    background: -webkit-linear-gradient(rgb(46, 25, 80), rgb(93, 41, 252));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.main-container .heading h1.MI {
+    background: -webkit-linear-gradient(rgb(31, 63, 82), rgb(14, 31, 185));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.main-container .heading h1.PBKS {
+    background: -webkit-linear-gradient(rgb(138, 55, 73), rgb(185, 14, 14));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.main-container .heading h1.RCB {
+    background: -webkit-linear-gradient(rgb(26, 1, 1), rgb(207, 11, 11));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.main-container .heading h1.RR {
+    background: -webkit-linear-gradient(rgb(124, 36, 66), rgb(14, 39, 184));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.main-container .heading h1.SRH {
+    background: -webkit-linear-gradient(rgb(97, 37, 2), rgb(196, 77, 9));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.main-container .heading p {
+    padding-bottom: 1.5em;
+    font-size: 1em;
+    font-weight: 400;
+}
+
+
+.main-container .heading .btn {
+    width: 10em;
+    cursor: pointer;
+    margin-bottom: 0;
+    font-weight: 600;
+}
+
+
+.main-container .heading .trophy {
+    display: flex;
+    flex-direction: row;
+}
+
+.main-container .heading .trophy span {
+    margin-right: 1em;
+    color: #6e480180;
+    text-transform: uppercase;
+    font-weight: 900;
+    font-size: 1.5em;
+}
+
+
+.empty {
+    position: absolute;
+    clip-path: polygon(70% 0, 100% 0, 100% 100%, 40% 100%);
+    width: 100vw;
+    height: 100%;
+    top: 0;
+    right: 0;
+    z-index: -1;
+}
+
+.empty.RCB,
+.main-container .heading .btn.RCB {
+    background-image: linear-gradient(to right, rgb(150, 3, 3), #c91711, #6d0000);
+    /* background-color: rgb(150, 3, 3) !important; */
+    color: #eebd89;
+}
+
+.empty.CSK,
+.main-container .heading .btn.CSK {
+    background-image: linear-gradient(to right, rgb(192, 192, 6), #d3d038, #be842b);
+    /* background-color: rgb(192, 192, 6)  !important; */
+    color: rgb(179, 51, 5);
+}
+
+.empty.DC,
+.main-container .heading .btn.DC {
+    background-image: linear-gradient(to right, #18428a, #1a3ccf, #080674);
+    /* background-color: #18428a; */
+    color: rgb(241, 63, 63);
+}
+
+.empty.KKR,
+.main-container .heading .btn.KKR {
+    background-image: linear-gradient(to right, #361c6b, #2e1477, #18013b);
+    /* background-color: #361c6b; */
+    color: rgb(235, 222, 49);
+}
+
+.empty.PBKS,
+.main-container .heading .btn.PBKS {
+    background-image: linear-gradient(to right, #720709, #77143a, #7e071b);
+    background-color: #720709;
+    color: whitesmoke;
+}
+
+.empty.MI,
+.main-container .heading .btn.MI {
+    background-image: linear-gradient(to right, #184c91, #142e77, #2b42a7);
+    /* background-color: #184c91; */
+    color: whitesmoke
+}
+
+.empty.RR,
+.main-container .heading .btn.RR {
+    background-image: linear-gradient(to right, #db637f, #922b5f, #ac2879);
+    background-color: #db637f;
+    color: #0c245e;
+}
+
+.empty.SRH,
+.main-container .heading .btn.SRH {
+    background-image: linear-gradient(to right, chocolate, #e99b35, #aa3c1a);
+    background-color: chocolate;
+    color: black;
+}
+
+
+
+/* now one team is ready */
+
+/* lets do the code for remaining teams by using javascript */
+
+.team-list {
+    justify-content: center;
+}
+
+.team-list ul {
+    display: flex;
+    position: absolute;
+    flex-direction: row;
+    top: 15%;
+    list-style: none;
+    margin-left: 30%;
+    z-index: 10;
+}
+
+.team-list ul li a {
+    margin-right: 2em;
+    font-weight: 900;
+    font-size: 1em;
+    cursor: pointer;
+    font-family: 'Dosis', sans-serif;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+}
+
+.team-list ul li a:hover,
+.team-list ul li a.active {
+    transform: scale(2, 2);
+    background: -webkit-linear-gradient(rgb(6, 12, 0), rgb(1, 36, 1));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.table-section {
+    position: absolute;
+    width: 100%;
+    height: 100;
+    top: 80vh;
+    z-index: 200;
+    background-color: linear-gradient(90deg, #121212, #3a3030);
+}
+
+.table-container {
+    z-index: 210;
+    background-color: linear-gradient(90deg, #121212, #3a3030);
+
+}
+
+.table-responsive {
+    border: 1px solid transparent;
+    border-radius: 10px;
+}
+
+.table-container .title {
+    font-weight: 900;
+    text-transform: uppercase;
+    background: -webkit-linear-gradient(45deg, rgb(2, 10, 6), rgb(6, 143, 125));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.team-slogo {
+    width: 3em;
+    height: 3em;
+    margin-left: -6em;
+    padding: 0;
+}
+
+.table-section .table tr {
+    vertical-align: middle;
+}
+
+.table-section .table th,
+.table-section .table td {
+    text-transform: uppercase;
+    font-weight: 500;
+    width: 5em;
+    justify-content: center;
+    align-items: center;
+    color: whitesmoke;
+}
+
+.table-section .table th {
+    color: rgb(207, 245, 207);
+    font-weight: 900;
+}
+
+.table-section .table thead th {
+    text-align: center;
+}
+
+.table-section .table .darken-4 {
+    /* background-image: linear-gradient(to right, #121212, #232129, #0e0c13); */
+    background: linear-gradient(45deg, #121212, #022020);
+}
+
+.table-section .table .darken-2 {
+    /* background-image: linear-gradient(to right, #102335, #291f47, #1f1c46); */
+    background: linear-gradient(45deg, #1d1c1c, #032e2e);
+}
+
+.table-section .table .darken-3 {
+    /* background-image: linear-gradient(to right, #090225, #111330, #131035); */
+    background: linear-gradient(45deg, #414040, #033030);
+}
+
+.text-success {
+    color: green !important;
+}
+
+.text-danger {
+    color: red !important;
+}
+
+/* now coding for responsive */
+
+
+@media screen and (max-width: 900px) {
+    .navbar {
+        z-index: 100;
+    }
+
+    .main-container .heading {
+        top: 55%;
+        width: 100%;
+        margin-left: 10%;
+    }
+
+    .main-container .heading h1 {
+        font-size: 1.5em;
+    }
+
+    .team-list ul {
+        position: absolute;
+        top: 15%;
+        margin-left: 0;
+    }
+
+    .team-list ul li a {
+        margin: -0.5em;
+    }
+
+    .logobg {
+        position: absolute;
+        top: 20%;
+    }
+
+    .logobg.CSK {
+        width: 10em;
+        height: 10em;
+    }
+
+    .logobg.DC {
+        width: 10em;
+        height: 10em;
+    }
+
+    .logobg.KKR {
+        width: 8em;
+        height: 12em;
+    }
+
+    .logobg.MI {
+        width: 12em;
+        height: 12em;
+    }
+
+    .logobg.PBKS {
+        width: 10em;
+        height: 12em;
+    }
+
+    .logobg.RCB {
+        width: 8em;
+        height: 10em;
+    }
+
+    .logobg.RR {
+        width: 12em;
+        height: 14em;
+    }
+
+    .logobg.SRH {
+        width: 12em;
+        height: 10em;
+    }
+
+    .teamimage.RCB {
+        margin-top: 5em;
+        width: 25em;
+        height: 18em;
+    }
+
+    .teamimage.CSK {
+        margin-top: 5em;
+        width: 20em;
+        height: 18em;
+    }
+
+    .teamimage.DC {
+        margin-top: 5em;
+        width: 22em;
+        height: 18em;
+    }
+
+    .teamimage.KKR {
+        margin-top: 7em;
+        width: 22em;
+        height: 16em;
+    }
+
+    .teamimage.PBKS {
+        margin-top: 5em;
+        width: 20em;
+        height: 17em;
+    }
+
+    .teamimage.MI {
+        margin-top: 5em;
+        width: 20em;
+        height: 17em;
+    }
+
+    .teamimage.RR {
+        margin-top: 2.5em;
+        width: 29em;
+        height: 24em;
+        right: -15%;
+    }
+
+    .teamimage.SRH {
+        margin-top: 5em;
+        width: 22em;
+        height: 17em;
+    }
+
+
+
+    .main-container .heading .btn {
+        /* width: 10em; */
+        font-size: 1em;
+    }
+
+    .team-slogo {
+        margin-left: -1em;
+    }
+}

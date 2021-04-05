@@ -1,0 +1,360 @@
+.schedule-section {
+    background-image: linear-gradient(to right, #ebe8ee, #eef0f1, #edeaf0);
+
+}
+
+.fixture-results {
+    position: relative;
+    top: 12%;
+    left: 3%;
+    margin-bottom: 3em;
+    margin-left: 2em;
+}
+
+
+.fixture-results ul {
+    display: flex;
+    position: absolute;
+    flex-direction: row;
+    top: 15%;
+    list-style: none;
+    z-index: 10;
+}
+
+.fixture-results ul li a {
+    margin-right: 1em;
+    font-size: 5em;
+    font-weight: 900;
+    font-size: 1em;
+    cursor: pointer;
+    font-family: 'Quicksand', sans-serif;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+
+}
+
+.fixture-results ul li.active a,
+.fixture-results ul li a:hover,
+.fixture-results ul li a.active {
+    background-image: linear-gradient(to right, #f3e7e7, #fff);
+    transform: scale(1.2, 1.2);
+}
+
+
+.filter-card {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    word-wrap: break-word;
+    background-image: linear-gradient(to right, #f3e7e7, #fff);
+    background-clip: border-box;
+    border: 3px solid #eef0f1;
+    border-radius: 10px;
+    margin: 2em;
+    margin-top: 2.5em;
+    padding: 2em;
+}
+
+.filter-card .filter-head {
+    display: inline-flex;
+    margin-bottom: 1em;
+}
+
+.filter-card .filter-head i {
+    margin-right: 1em;
+}
+
+.filter-card .filter-head .filter-text {
+    font-family: 'Quicksand', sans-serif;
+    font-weight: 600;
+}
+
+.filter-card .teams {
+    display: inline-flex;
+}
+
+.filter-card form {
+    display: flex;
+    flex-direction: row;
+    padding: 1em;
+    margin-top: 1em;
+}
+
+
+.form-group {
+    position: relative;
+    height: 2em;
+}
+
+.form-group div {
+    margin-right: 4em;
+}
+
+.form-group .select {
+    font-weight: 500;
+}
+
+.form-group label {
+    position: absolute;
+    left: 0;
+    top: -50%;
+    transform: translateY(-50%);
+    color: rgb(19, 14, 14);
+    font-size: 1em;
+    transition: .3s;
+    text-transform: uppercase;
+}
+
+.form-group:before,
+.form-group:after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    width: 0%;
+    height: 2px;
+    background-color: #38d39f;
+    transition: .4s;
+}
+
+.form-group:before {
+    right: 50%;
+}
+
+.form-group:after {
+    left: 50%;
+}
+
+.form-group.focus:before,
+.form-group.focus:after {
+    width: 50%;
+}
+
+.form-group.focus>label {
+    top: -0.5em;
+    font-size: 1em;
+}
+
+.clr-filter {
+    text-transform: uppercase;
+    font-weight: 600;
+    margin-top: 0.5em;
+}
+
+.clr-filter:focus,
+.clr-filter:hover {
+    text-decoration: none;
+    color: red;
+}
+
+.filter-card form .btn {
+    width: 10em;
+    height: 2.5em;
+    border: 2px solid black;
+    border-radius: 2em;
+    background-image: linear-gradient(to right, #7332be, #3888d3, #7f32be);
+    background-size: 200%;
+    font-size: 1em;
+    color: #fff;
+    font-family: 'Poppins', sans-serif;
+    text-transform: uppercase;
+    margin-left: 1em;
+    cursor: pointer;
+    transition: .5s;
+    justify-content: center;
+    clear: both;
+}
+
+.filter-card form.btn:hover {
+    background-position: right;
+}
+
+.card {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    word-wrap: break-word;
+    background-clip: border-box;
+    border: 0 solid transparent;
+    border-radius: 10px;
+    margin: 2em;
+}
+
+.match-block {
+    display: block;
+    position: relative;
+    padding: .5em 1.5em;
+    border-right: 1px solid #d1d4da;
+    border-bottom: 1px solid #d2d4da;
+    margin-top: 1em;
+}
+
+.match-date {
+    font-size: 1.1em;
+    text-transform: uppercase;
+    font-weight: 500;
+    color: rgb(13, 80, 4);
+    font-family: 'Quicksand', sans-serif;
+    letter-spacing: 0;
+}
+
+.match-desc {
+    font-family: 'Poppins', sans-serif;
+    font-size: 0.9em;
+    color: #6c6d6f;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    margin-top: 0.7em;
+    letter-spacing: 0;
+}
+
+.match-empty {
+    font-family: 'Poppins', sans-serif;
+    font-size: 2em;
+    font-weight: 800;
+}
+
+.teams {
+    margin-top: 1em;
+}
+
+.teams::before,
+.teams::after {
+    content: '';
+    box-sizing: border-box;
+}
+
+.teams .team {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 0.5em;
+    margin-top: 0.5em;
+    align-items: center;
+    color: #2b2c2d;
+    font-weight: 500;
+}
+
+.team-name-detail {
+    display: inline-flex;
+    line-height: 1.5;
+    letter-spacing: 0.1em;
+    align-items: center;
+    font-size: 1em;
+    white-space: nowrap;
+    opacity: 1;
+}
+
+.team-name-detail img {
+    width: 4em;
+    height: 4em;
+    margin-right: .5em;
+    border-radius: .5em;
+    border: none;
+    position: relative;
+    top: -1.5px;
+}
+
+.team-name-detail .name {
+    font-size: 1.2em;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+.team-name-detail .score {
+    font-size: 1.2em;
+    font-weight: 600;
+    font-family: 'Quicksand', sans-serif;
+    position: absolute;
+    left: 30%;
+}
+
+
+.team-name-detail .name.CSK {
+    background: -webkit-linear-gradient(rgb(161, 158, 14), rgb(219, 104, 22));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.team-name-detail .name.DC {
+    background: -webkit-linear-gradient(rgb(14, 41, 161), rgb(209, 71, 71));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.team-name-detail .name.KKR {
+    background: -webkit-linear-gradient(rgb(124, 100, 231), rgb(30, 14, 77));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.team-name-detail .name.MI {
+    background: -webkit-linear-gradient(rgb(100, 183, 231), rgb(14, 31, 185));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.team-name-detail .name.PBKS {
+    background: -webkit-linear-gradient(rgb(231, 100, 128), rgb(185, 14, 14));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.team-name-detail .name.RCB {
+    background: -webkit-linear-gradient(rgb(231, 19, 19), rgb(185, 14, 14));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.team-name-detail .name.RR {
+    background: -webkit-linear-gradient(rgb(197, 59, 105), rgb(214, 85, 139));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.team-name-detail .name.SRH {
+    background: -webkit-linear-gradient(rgb(209, 119, 67), rgb(196, 77, 9));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.match-status {
+    font-family: 'Quicksand', sans-serif;
+    font-weight: 700;
+    margin: 1.2em;
+    color: rgb(3, 46, 5);
+}
+
+.match-button .btn {
+    width: 11em;
+    height: 2.5em;
+    background-image: linear-gradient(to right, #7332be, #3888d3, #7f32be);
+    background-size: 200%;
+    font-size: 0.8em;
+    color: #fff;
+    font-family: 'Poppins', sans-serif;
+    text-transform: uppercase;
+    margin: 1em;
+    cursor: pointer;
+    transition: .5s;
+}
+
+@media only screen and (max-width: 700px) {
+    .team-name-detail .score {
+        left: 70%;
+    }
+
+    .filter-team {
+        margin-left: -1em;
+    }
+
+    .form-group {
+        padding: 0;
+        margin: 0;
+    }
+
+    .form-control {
+        width: 4em !important;
+        padding: 0;
+    }
+}

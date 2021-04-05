@@ -1,0 +1,169 @@
+{% extends '_base.html' %} 
+{% load static %} 
+{% block title %} Home Page {% endblock title %} 
+
+{% block stylesheet %}
+<link href="{% static 'css/main.css' %}" rel="stylesheet" />
+{% endblock stylesheet %} 
+
+{% block content %} 
+{% include '_navbar.html' %}
+
+<section class="main-section">
+  <div class="container-fluid main-container {{curr_team}}">
+    <div class="team-list justify-content-center">
+      <ul class="nav ">
+        {% for team in teams %} 
+          {% if team == curr_team %}
+            <li class="nav-item">
+              {% with team.name as team_name %}
+              <a class="nav-link active" href="{% url 'app_main:home' name=team_name %}">{{team.name}}</a>
+              {% endwith %}
+            </li>
+          {% else %}
+            <li class="nav-item">
+              {% with team.name as team_name %}
+              <a class="nav-link" href="{% url 'app_main:home' name=team_name %}">{{team.name}}</a>
+              {% endwith %}
+            </li>
+          {% endif %} 
+        {% endfor %}
+      </ul>
+    </div>
+
+    <div class="team-logo">
+      <img
+        src="{{curr_team.logo.url}}"
+        class="logobg {{curr_team.name}}"
+        alt=""
+      />
+    </div>
+
+    <div class="heading">
+      <h1 id="head" class="{{curr_team.name}}">{{curr_team.get_name_display}}</h1>
+
+      <div class="trophy">
+        {% if curr_team.name == 'CSK' %}
+          <span><i class="fas fa-trophy fa-2x"></i></span>
+          <span><i class="fas fa-trophy fa-2x"></i></span>
+          <span><i class="fas fa-trophy fa-2x"></i></span>
+        {% elif curr_team.name == 'SRH' or curr_team.name == 'KKR' %}
+          <span><i class="fas fa-trophy fa-2x"></i></span>
+          <span><i class="fas fa-trophy fa-2x"></i></span>
+        {% elif curr_team.name == 'MI' %}
+          <span><i class="fas fa-trophy fa-2x"></i></span>
+          <span><i class="fas fa-trophy fa-2x"></i></span>
+          <span><i class="fas fa-trophy fa-2x"></i></span>
+          <span><i class="fas fa-trophy fa-2x"></i></span>
+          <span><i class="fas fa-trophy fa-2x"></i></span>
+        {% elif curr_team.name == 'RR'  %}
+          <span><i class="fas fa-trophy fa-2x"></i></span>
+        {% else %}
+          <span>Waiting for a trophy!!</span>
+        
+        {% endif %}
+        
+      </div>
+      <p style="font-weight: 500">
+      
+      </p>
+
+      
+      {% if user.is_authenticated %}
+        <a href="{% url 'app_matches:schedule' typ='fix' %}" class="nav-link btn btn-primary btn-round btn-lg {{curr_team}}">START NOW</a>
+      {% else %}
+        <a href="{% url 'app_users:login' %}" class="nav-link btn btn-primary btn-round btn-lg {{curr_team}}">START NOW</a>  
+      {% endif %}
+        
+      
+      
+    </div>
+
+    <div class=".team-image">
+      <img
+        class="teamimage {{curr_team.name}}"
+        src="{{curr_team.bg.url}}"
+        alt=""
+      />
+    </div>
+
+    <div class="empty {{curr_team.name}}"></div>
+  </div>
+</section>
+
+<section class="table-section">
+  <div class="container table-container">
+    <div class="text-center">
+      <h2 class="title">Team Standings</h2>
+      <div class="table-responsive">
+        <table class="table w-auto text-nowrap">
+            <thead>
+                <tr class="darken-4">
+                    <th>#</th>
+                    <th>Team</th>
+                    <th>Played</th>
+                    <th>Won</th>
+                    <th>Lost</th>
+                    <th>NR</th>
+                    <th>Points</th>
+                    <th>For</th>
+                    <th>Against</th>
+                    <th>NRR</th>
+
+                </tr>
+            </thead>
+            <tbody>
+
+                {% for team in teams %}
+
+                {% if forloop.counter|divisibleby:2 %}
+                <tr class="darken-2">
+                    {% else %}
+                <tr class="darken-3">
+                    {% endif %}
+                    <th scope="row">{{forloop.counter}}</th>
+                    <td><img class="team-slogo img-fluid" src="{{team.slogo.url}}"></td>
+                    <td>{{team.played}}</td>
+                    <td>{{team.won}}</td>
+                    <td>{{team.lost}}</td>
+                    <td>{{team.no_res}}</td>
+                    <td>{{team.points}}</td>
+                    
+                    {% if team.for_status %}
+                      <td>{{team.for_status}}</td>
+                    {% else %}
+                      <td>-</td>  
+                    {% endif %}
+                      
+                    
+                    {% if team.against_status %}
+                      <td>{{team.against_status}}</td>
+                    {% else %}
+                    <td>-</td>
+                    {% endif %}
+                      
+                    
+                    {% if team.nrr < 0 %}
+                    <td class="text-danger">{{team.nrr|floatformat:3}}</td>
+                    {% else %}  
+                    <td class="text-success">{{team.nrr|floatformat:3}}</td>  
+                    {% endif %}
+                      
+                    
+                </tr>
+                {% endfor %}
+
+            </tbody>
+        </table>
+
+      </div>
+    </div>
+  </div>
+</section>
+
+
+{% endblock content %} 
+
+{% block extra-scripts %}
+<script src="{% static 'js/nav.js' %}"></script>
+{% endblock extra-scripts %}

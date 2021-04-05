@@ -1,0 +1,331 @@
+{% extends '_base.html' %}
+{% load static %}
+{% load index %}
+{% block title %} Dashboard {% endblock title %}
+
+{% block stylesheet %}
+<link href="{% static 'css/dashboard.css' %}" rel="stylesheet" />
+{% endblock stylesheet %}
+
+{% block content %}
+{% include '_navbar.html' %}
+<section class="dashboard-section">
+    <div class="container-fluid">
+        <div class="background">
+            <div class="page-heading-bg">
+                <img src="{% static 'img\iplgeneric.svg' %}" aria-hidden="true">
+            </div>
+        </div>
+        <div class="row text-center">
+            <div class="col-md-4 col-xs-4">
+                <div class="profile-card-6"><img src="{{user.team.profile_bg.url}}" class="img img-responsive">
+                    <div class="profile-name">{{user.name|first}}
+                        <br>{{user.name|last}}
+                    </div>
+                    <div class="profile-overview">
+                        <div class="profile-overview">
+                            <div class="row text-center">
+                                <div class="col-xs-6">
+                                    <p>#{{user_rank}}</p>
+                                    <p>Rank</p>
+                                </div>
+                                <div class="col-xs-6">
+
+                                    {% if user.curr_amt < 0 %}
+                                    <p class="text-danger"><i class="fab fa-product-hunt"></i>
+                                        {{user.curr_amt|floatformat:2}}</p>
+                                    {% else %}
+                                    <p class="text-success"><i class="fab fa-product-hunt"></i>
+                                        {{user.curr_amt|floatformat:2}}</p>
+                                    {% endif %}
+
+
+                                    <p>Balance</p>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+            <div class="col-md-8 col-xs-8">
+                <div class="details-container">
+                    <div class="stats-heading">Your Statistics</div>
+                    <div class="details-overview">
+                        <div class="row text-center">
+                            <div class="col-md-6 col-xs-6">
+                                <p>Matches Completed</p>
+                                <p>{{match_count}}</p>
+                            </div>
+                            <div class="col-md-6 col-xs-6">
+                                <p>Predictions Made</p>
+                                <p>{{bet_count}}</p>
+                            </div>
+                        </div>
+                        <div class="row text-center">
+                            <div class="col-md-6 col-xs-6">
+                                <p>Correct Predictions</p>
+                                <p>{{user.bets_won}}</p>
+                            </div>
+                            <div class="col-md-6 col-xs-6">
+                                <p>Incorrect Predictions</p>
+                                <p>{{user.bets_lost}}</p>
+                            </div>
+                        </div>
+                        <div class="row text-center">
+                            <div class="col-md-6 col-xs-6">
+                                <p>Points Won</p>
+                                <p class='text-success'>{{amt_won|floatformat:2}}</p>
+                            </div>
+                            <div class="col-md-6 col-xs-6">
+                                <p>Points Lost</p>
+                                <p class='text-danger'>{{amt_lost|floatformat:2}}</p>
+                            </div>
+                        </div>
+                        <div class="row text-center">
+                            <div class="form-guide col-md-12">
+                                <p>Form Guide</p>
+
+                                {% for bet in user|form_guide  %}
+                                {% if bet.is_won %}
+                                <div class="won"></div>
+                                {% elif bet.is_lost_or_default %}
+                                <div class="lost"></div>
+                                {% else %}
+                                <div class="draw"></div>
+                                {% endif %}
+                                {% endfor %}
+
+                                {% for i in user|remain_count  %}
+                                <div class="draw"></div>
+                                {% endfor %}
+
+                            </div>
+                        </div>
+                        <div class="row text-center">
+
+                            {% if match_count > 27 %}
+                            <div class="col-md-12 buttons">
+                                <a href="{{next_match.get_absolute_url}}" class="btn">Next Match</a>
+                            </div>
+                            {% else %}
+                            <div class="col-md-6 col-xs-6 buttons">
+                                <a href="{{next_match.get_absolute_url}}" class="btn">Next Match</a>
+                            </div>
+                            <div class="col-md-6 col-xs-6 buttons">
+                                <a href="{% url 'app_main:team_change' %}" class="btn">IPL Winner</a>
+                            </div>
+                            {% endif %}
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<section class="players-section">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-6 col-xs-12">
+                <div class="player-container">
+                    <div class="text-center">
+                        <h2 class="title">Player Standings</h2>
+                        <div class="table-responsive">
+                            <table class="table w-auto text-nowrap">
+                                <thead>
+                                    <tr class="darken-4">
+                                        <th>#</th>
+                                        <th>Team</th>
+                                        <th>Player</th>
+                                        <th>Points</th>
+                                        <th>Form Guide</th>
+
+                                        {% if final_completed %}
+                                        <th>Final Match</th>
+                                        {% endif %}
+
+                                    </tr>
+                                </thead>
+                                <tbody>
+
+                                    {% for player in users %}
+
+                                    {% if forloop.counter|divisibleby:2 %}
+                                    <tr class="darken-2">
+                                        {% else %}
+                                    <tr class="darken-3">
+                                        {% endif %}
+                                        <th scope="row">{{forloop.counter|on_page:users.number}}
+                                        </th>
+                                        <td><img class="team-slogo img-fluid" src="{{player.team.slogo.url}}"></td>
+                                        <td>{{player.name|abbr}}</td>
+
+                                        {% if player.curr_amt < 0 %}
+                                        <td class="text-danger">{{player.curr_amt|floatformat:2}}</td>
+                                        {% else %}
+                                        <td class="text-success">{{player.curr_amt|floatformat:2}}</td>
+                                        {% endif %}
+
+
+                                        <td class="form-guide">
+                                            {% for bet in player|form_guide %}
+
+                                            {% if bet.is_won %}
+                                            <div class="won"></div>
+                                            {% elif bet.is_lost_or_default %}
+                                            <div class="lost"></div>
+                                            {% else %}
+                                            <div class="draw"></div>
+                                            {% endif %}
+
+                                            {% endfor %}
+
+                                            {% for i in player|remain_count  %}
+                                            <div class="draw"></div>
+                                            {% endfor %}
+                                        </td>
+                                        {% if final_completed %}
+                                        {% if player|ipl_winner_bet < 0 %}
+                                        <td class="text-danger">{{player|ipl_winner_bet|floatformat:2}}</td>
+                                        {% else %}
+                                        <td class="text-success">{{player|ipl_winner_bet|floatformat:2}}</td>
+                                        {% endif %}
+                                        {% endif %}
+                                    </tr>
+                                    {% endfor %}
+
+                                </tbody>
+                            </table>
+                            {% if users %}
+                            <nav aria-label="Page navigation example">
+                                <ul class="pagination pagination-template d-flex justify-content-center">
+                                    {% if users.has_previous %}
+                                    <li class="page-item"><a href="?user_page={{ users.previous_page_number }}"
+                                            class="page-link text-secondary"> <i class="fa fa-angle-left"></i></a></li>
+                                    <li class="page-item"><a href="?user_page={{usersj.previous_page_number}}"
+                                            class="page-link text-secondary">{{ users.previous_page_number }}</a>
+                                    </li>
+                                    {% else %}
+                                    <li class="page-item"><a href="#" class="page-link text-default disabled"> <i
+                                                class="fa fa-angle-left"></i></a>
+                                    </li>
+                                    {% endif %}
+                                    <li class="page-item"><a href="#"
+                                            class="page-link active text-white"><strong>{{ users.number }}</strong>
+                                            <span class="sr-only">(current)</span></a>
+                                    </li>
+                                    {% if users.has_next %}
+                                    <li class="page-item"><a href="?user_page={{users.next_page_number}}"
+                                            class="page-link text-secondary">{{ users.next_page_number }}</a>
+                                    </li>
+                                    <li class="page-item"><a href="?user_page={{users.next_page_number}}"
+                                            class="page-link text-secondary"> <i class="fa fa-angle-right"></i></a></li>
+                                    {% else %}
+                                    <li class="page-item"><a href="#" class="page-link text-default disabled"> <i
+                                                class="fa fa-angle-right"></i></a>
+                                    </li>
+                                    {% endif %}
+                                </ul>
+
+                            </nav>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-6 col-xs-12">
+                <div class="player-container">
+                    <div class="text-center">
+                        <h2 class="title">Your Predictions</h2>
+                        <div class="table-responsive">
+                            <table class="table text-nowrap">
+                                <thead>
+                                    <tr class="darken-4">
+                                        <th>Match</th>
+                                        <th>Team</th>
+                                        <th>Points</th>
+                                        <th>Status</th>
+                                        <th>Result</th>
+
+                                    </tr>
+                                </thead>
+                                <tbody>
+
+                                    {% for bet in bets %}
+
+                                    {% if forloop.counter|divisibleby:2 %}
+                                    <tr class="purple darken-2">
+                                        {% else %}
+                                    <tr class="deep-purple darken-3">
+                                        {% endif %}
+
+                                        {% if bet.match %}
+                                        <td><a class="link" title="{{bet.match.result}}"
+                                                href="{{bet.match.get_absolute_url}}">{{bet.match}}</a></td>
+                                        {% else %}
+                                        <td>IPL Winner</td>
+                                        {% endif %}
+
+
+                                        <td>{{bet.bet_team}}</td>
+                                        <td>{{bet.bet_amt}}</td>
+                                        <td>{{bet.get_status_display}}</td>
+
+                                        {% if bet.is_won %}
+                                        <td class="text-success">{{bet.win_amt|floatformat:2}}</td>
+                                        {% elif bet.is_lost_or_default %}
+                                        <td class="text-danger">{{bet.lost_amt|floatformat:2}}</td>
+                                        {% else %}
+                                        <td>0</td>
+                                        {% endif %}
+
+
+
+                                    </tr>
+                                    {% endfor %}
+
+                                </tbody>
+                            </table>
+                            {% if bets %}
+                            <nav aria-label="Page navigation example">
+                                <ul class="pagination pagination-template d-flex justify-content-center">
+                                    {% if bets.has_previous %}
+                                    <li class="page-item"><a href="?pred_page={{bets.previous_page_number}}"
+                                            class="page-link text-secondary"> <i class="fa fa-angle-left"></i></a></li>
+                                    <li class="page-item"><a href="?pred_page={{bets.previous_page_number}}"
+                                            class="page-link text-secondary">{{ bets.previous_page_number }}</a>
+                                    </li>
+                                    {% else %}
+                                    <li class="page-item"><a href="#" class="page-link text-default disabled"> <i
+                                                class="fa fa-angle-left"></i></a>
+                                    </li>
+                                    {% endif %}
+                                    <li class="page-item"><a href="#"
+                                            class="page-link active text-white"><strong>{{ bets.number }}</strong>
+                                            <span class="sr-only">(current)</span></a></li>
+                                    {% if bets.has_next %}
+                                    <li class="page-item"><a href="?pred_page={{bets.next_page_number}}"
+                                            class="page-link text-secondary">{{ bets.next_page_number }}</a></li>
+                                    <li class="page-item"><a href="?pred_page={{bets.next_page_number}}"
+                                            class="page-link text-secondary"> <i class="fa fa-angle-right"></i></a></li>
+                                    {% else %}
+                                    <li class="page-item"><a href="#" class="page-link text-default disabled"> <i
+                                                class="fa fa-angle-right"></i></a>
+                                    </li>
+                                    {% endif %}
+                                </ul>
+
+                            </nav>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</section>
+{% endblock content %}

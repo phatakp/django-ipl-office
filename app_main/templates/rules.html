@@ -1,0 +1,149 @@
+{% extends '_base.html' %}
+{% load static %}
+{% load index %}
+{% block title %} Game Rules {% endblock title %}
+
+{% block stylesheet %}
+<link href="{% static 'css/dashboard.css' %}" rel="stylesheet" />
+{% endblock stylesheet %}
+
+{% block content %}
+{% include '_navbar.html' %}
+
+<section class="rules-section">
+    <div class="container-fluid">
+        <div class="rules">
+            <span class="heading">Registration and Stakes</span>
+            <ol>
+                <li>Interested players to register on the site <a
+                        href="{% url 'app_users:register' %}"><strong>here</strong></a>.
+                    (via personal devices only).
+                </li>
+                <li>Upon registration each player will be allocated <strong>2000 points</strong> as starting balance.
+                </li>
+                <li>Player needs to predict the winner of every match before the cutoff.</li>
+                <li>Cutoff time for prediction for any match is <strong>1 hour prior the start time of match</strong>.
+                    <ul>
+                        <li><small>For matches starting at 3:30 PM IST, prediction should be done before 2:30 PM
+                                IST.</small>
+                        </li>
+                        <li><small>For matches starting at 7:30 PM IST, prediction should be done before 6:30 PM
+                                IST.</small>
+                        </li>
+
+                    </ul>
+                </li>
+                <li>While predicting, you will automatically stake certain points from your kitty as per below scenario.
+                    <ul>
+                        <li>For first 28 league matches - <strong>20 points</strong></li>
+                        <li>For next 28 league matches - <strong>30 points</strong></li>
+                        <li>For Qualifiers and Eliminator - <strong>40 points</strong></li>
+                        <li>For IPL Final - <strong>150 points</strong></li>
+                    </ul>
+                </li>
+                <li>You will be able to modify your prediction up until start of the match (3:30 or 7:30)
+                    respectively. However, this will result in <strong>deduction of 10 points for every change</strong>
+                    .
+                </li>
+                <li>If you miss the cutoff for prediction, you will automatically forfeit applicable points for that
+                    match.
+                </li>
+
+                <li class="text-danger">The cutoff times for predictions will not change even if the match is delayed
+                    due to any circumstances.
+                </li>
+                <li>During registration, player needs to predict Winner of IPL-2021. </li>
+                <li>At this point you will automatically stake additional 300 points in an IPL kitty, to be won at the
+                    end.
+                    <br>This means your actual point balance after registration will be 1700.
+                </li>
+                <li>You will get an option to change the winner for IPL-2021, up until the completion of
+                    <strong>Match No.28 - RR vs SRH</strong> on <a
+                        href="{% url 'app_main:dashboard' %}"><strong>Dashboard tab (IPL Winner Button)</strong></a> .
+                </li>
+                <li>If you change the winner before completion of <strong>Match No.12 - CSK vs RR, no points will be
+                        deducted from your account</strong>.
+                </li>
+                <li>However, starting Match No.13, points equivalent to <em><strong>No of Completed Matches x
+                            5</strong></em> will be
+                    deducted.
+                    <ul>
+                        <li><small>For e.g If you change IPL winner after completion of Match No.20, 100 points (20x5)
+                                will be
+                                deducted.</small></li>
+                        <li><small>Similarly if you change winner after completion of Match No.25, 125 points
+                                (25x5)
+                                will be
+                                deducted.</small></li>
+                    </ul>
+                </li>
+                <li>These points will be pooled in and will be added to whoever has guessed the correct IPL-2021
+                    winners'
+                    kitty.
+                </li>
+                <li>In case of multiple winners (same team guessed by multiple),total points will be distributed evenly
+                    among them.
+                </li>
+            </ol>
+        </div>
+        <div class="rules">
+            <span class="heading">Gaining Points</span>
+            <ol>
+                <li>Settlement of points for every match will done as below -</li>
+                <li>If your prediction was incorrect or you missed the cutoff for prediction, you lose the points that
+                    were applicable for the match.</li>
+                <li>If your prediction was correct, you will receive points equivalent to<em><strong> (Total Staked
+                            points for match / Total number of winners)</strong>. </em>
+                    <ul>
+                        <li>For e.g. If suppose there are 20 registered players and 20 points applicable as individual
+                            stake for a
+                            match,
+                            then Total Stake = 20 x 20 = 400 points. <br>If 5 players predicted the winner correctly,
+                            each
+                            of them get
+                            400/5 = 80 points.
+                        </li>
+                    </ul>
+                </li>
+                <li>In case the match is abandoned or no winning team could be identified due to any
+                    circumstances, the total
+                    points at stake gets added to the IPL winner kitty.</li>
+                <li>For IPL Final, if there is no player, who correctly guessed the winner (during registration), the
+                    initial stake for 300 points in kitty will be null and void.
+                </li>
+                <li>However, in above scenario if there is any balance in IPL kitty due to change of IPL winner team or
+                    abandoned match,
+                    <br>the total points in pool will be equally distributed to any players who did not change their
+                    overall
+                    IPL winner prediction throughout the course.</li>
+            </ol>
+        </div>
+        <div class="rules">
+            <span class="heading">Prediction Process</span>
+            <ol>
+                <li>You can predict for a match from
+                    <a href="{% url 'app_main:dashboard' %}"><strong>Dashboard tab (Next
+                            Match Button)</strong></a> or
+                    <a href="{% url 'app_matches:schedule' typ='fix' %}"><strong>Fixtures & Results tab</strong>.</a>
+                </li>
+                <li>All predictions from other players, will be visible only after the cutoff for match has passed.</li>
+                <li class="text-success"><strong>You will be displayed certain stats and winning percentage of teams for
+                        a match
+                        (based on a naive prediction model), to help you make a choice.
+                        <br>However keep in mind, that lesser the number of correct predictions for any match, greater
+                        is
+                        the
+                        number of points the winner receives.
+                        So choose wisely <i class="far fa-smile-wink"></i></strong>
+                </li>
+
+
+            </ol>
+        </div>
+
+        <div class="rules">
+            <span class="heading">Let the Game Begin!!</span>
+        </div>
+    </div>
+</section>
+{% endblock content %}

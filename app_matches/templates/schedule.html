@@ -1,0 +1,152 @@
+{% extends '_base.html' %}
+{% load static %}
+{% load crispy_forms_tags %}
+
+{% block title %}
+Schedule
+{% endblock title %}
+
+{% block stylesheet %}
+<link href="{% static 'css/schedule.css' %}" rel="stylesheet" />
+{% endblock stylesheet %}
+
+{% block content %}
+{% include '_navbar.html' %}
+<div class="schedule-section">
+    <div class="container-fluid">
+        <div class="fixture-results">
+            <ul class="nav nav-tabs">
+                <li class="nav-item {{fix_active}}">
+                    <a class="nav-link" href="{% url 'app_matches:schedule' typ='fix' %}">Fixtures</a>
+                </li>
+                <li class="nav-item {{res_active}}">
+                    <a class="nav-link" href="{% url 'app_matches:schedule' typ='res' %}">Results</a>
+                </li>
+            </ul>
+        </div>
+        <div class="filter-card">
+            <div class="filter-head">
+                <i class="fas fa-filter"></i>
+                <span class="filter-text">Filter Matches</span>
+            </div>
+            <div class="filter-teams">
+                <form method="POST">
+                    {% csrf_token %}
+                    <div class="filter-team">
+                        {{form.home_team|as_crispy_field}}
+                    </div>
+                    <div class="filter-team">
+                        {{form.away_team|as_crispy_field}}
+                    </div>
+
+                    <div class="filter-team">
+
+                        {% if res_active %}
+                        <a class="nav-link clr-filter" href="{% url 'app_matches:schedule' typ='res' %}">Clear
+                            Filters</a>
+                        {% else %}
+                        <a class="nav-link clr-filter" href="{% url 'app_matches:schedule' typ='fix' %}">Clear
+                            Filters</a>
+                        {% endif %}
+
+
+                    </div>
+
+                </form>
+            </div>
+        </div>
+        <div class="card">
+            <div class="row">
+
+                {% for match in matches %}
+
+                <div class="col-16">
+                    <div class="match-block">
+                        <div class="match-date">
+                            <span>{{match.datetime|date:"d-M-Y"}}, {{match.datetime|time:"h:i A"}}</span>
+                        </div>
+
+                        {% if match.num < 57 %}
+                        <div class="match-desc">Match {{match.num}} - {{match.venue}}</div>
+                        {% else %}
+                        <div class="match-desc">{{match.get_typ_display}} - {{match.venue}}</div>
+                        {% endif %}
+
+
+                        {% if message %}
+
+                        {% endif %}
+
+                        <div class="teams">
+                            <div class="team">
+                                <div class="team-name-detail">
+
+                                    {% if match.home_team %}
+                                    <img class="img-fluid" src="{{match.home_team.slogo.url}}" />
+                                    <p class="name {{match.home_team.name}}">{{match.home_team.get_name_display}}</p>
+
+                                    {% if match.home_team_score %}
+                                    <p class="score {{match.home_team.name}}">{{match.home_team_score}}</p>
+                                    {% endif %}
+
+
+                                    {% else %}
+                                    <img class="img-fluid" src="{% static 'img/small-logo/tbc.png' %}" />
+                                    <p class="name">TBC</p>
+                                    {% endif %}
+
+                                </div>
+                            </div>
+                            <div class="team">
+                                <div class="team-name-detail">
+                                    {% if match.away_team %}
+                                    <img class="img-fluid" src="{{match.away_team.slogo.url}}" />
+                                    <p class="name {{match.away_team.name}}">{{match.away_team.get_name_display}}</p>
+
+                                    {% if match.away_team_score %}
+                                    <p class="score {{match.away_team.name}}">{{match.away_team_score}}</p>
+                                    {% endif %}
+
+
+                                    {% else %}
+                                    <img class="img-fluid" src="{% static 'img/small-logo/tbc.png' %}" />
+                                    <p class="name">TBC</p>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="match-status">
+
+                            {% if match.is_started %}
+                            <span>Match In Progress</span>
+                            {% else %}
+                            <span>{{match.result}}</span>
+                            {% endif %}
+                        </div>
+                        <div class="match-button">
+
+                            {% if match.is_started or match.is_completed or match.is_abandoned %}
+                            <a class="btn btn-primary" href="{{match.get_absolute_url}}">Details</a>
+                            {% else %}
+                            <a class="btn btn-primary" href="{{match.get_absolute_url}}">Predict</a>
+                            {% endif %}
+
+
+                        </div>
+                    </div>
+                </div>
+                {% empty %}
+
+                <div class="col-16">
+                    <div class="match-block">
+                        <div class="match-empty">No Matches Found</div>
+                    </div>
+                </div>
+
+                {% endfor %}
+
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock content %}

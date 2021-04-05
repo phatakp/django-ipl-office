@@ -1,0 +1,69 @@
+{% load static %}
+{% load index %}
+<nav class="navbar navbar-default navbar-inverse" role="navigation">
+  <div class="container-fluid">
+    <!-- Brand and toggle get grouped for better mobile display -->
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="{% url 'app_main:home' name='CSK' %}">
+        <img src="{% static 'img/element/ipl_logo.png' %}"/> 2021
+        
+        {% if user.is_authenticated  %}
+           <small class="small">&nbsp Kitty: <i class="fab fa-product-hunt"></i> {{user|ipl_kitty}}</small>
+        {% endif %}
+          
+      </a>
+    </div>
+
+    <!-- Collect the nav links, forms, and other content for toggling -->
+    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+      <ul class="nav navbar-nav">
+        <li class="{{home_active}}"><a href="{% url 'app_main:home' name='CSK' %}">Home</a></li>
+        
+        {% if user.is_authenticated %}
+        <li class="{{dash_active}}"><a href="{% url 'app_main:dashboard' %}">Dashboard</a></li>  
+        {% endif %}
+        
+        <li class="{{sch_active}}"><a href="{% url 'app_matches:schedule' typ='fix' %}">Fixtures & Results</a></li>
+        <li class="{{rule_active}}"><a href="{% url 'app_main:rules' %}">Game Rules</a></li>
+        
+        {% if user.is_authenticated %}
+        {% if user.is_ipl_admin or user.is_staff %}
+        
+        <li class="dropdown {{admin_active}}">
+          <a href="#" class="dropdown-toggle" data-toggle="dropdown">Admin <span class="caret"></span></a>
+          <ul class="dropdown-menu" role="menu">
+            <li><a href="{% url 'app_admin:main' typ='matchup' %}">Upload Matches</a></li>
+            <li class="divider"></li>
+            <li><a href="{% url 'app_admin:main' typ='history' %}">Upload History</a></li>
+            <li class="divider"></li>
+            <li><a href="{% url 'app_admin:main' typ='stats' %}">Upload Stats</a></li>
+          </ul>
+        </li>
+        {% endif %}
+        {% endif %}
+      </ul>
+       
+      <ul class="nav navbar-nav navbar-right">
+        
+        {% if user.is_authenticated %}
+          <li class="dropdown">
+          <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fas fa-user-secret"></i> {{user.name|abbr}}<span class="caret"></span></a>
+          <ul class="dropdown-menu" role="menu">
+            <li><a href="{% url 'app_users:pwd_change' %}">Change Password</a></li>
+            </ul>
+        </li>
+        <li><a class="login" href="{% url 'app_users:logout' %}"><i class="fas fa-sign-out-alt fa-2x"></i></a></li>
+        {% else %}
+        <li class="{{login_active}}"><a class="login" href="{% url 'app_users:login' %}"><i class="fas fa-sign-in-alt fa-2x"></i></a></li>
+        {% endif %}
+          
+      </ul>
+    </div><!-- /.navbar-collapse -->
+  </div><!-- /.container-fluid -->
+</nav>
