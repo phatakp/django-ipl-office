@@ -76,7 +76,7 @@ WSGI_APPLICATION = 'project_files.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/3.1/ref/settings/#databases
 
-if DEBUG:
+if os.getenv("IN_DEV") == 'True':
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.sqlite3',

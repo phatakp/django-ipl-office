@@ -4,11 +4,14 @@ from django.contrib.auth import get_user_model, update_session_auth_hash
 from django.shortcuts import render, redirect
 from django.urls import reverse_lazy
 from django.views.generic import FormView
+from django.utils import timezone
+from django.db.models import F
 
 from .forms import UserRegistrationForm, UserLoginForm, UserPwdChangeForm, UserPwdResetForm
 
 CustomUser = get_user_model()
 Bet = apps.get_model('app_matches', 'Bet')
+Match = apps.get_model('app_matches', 'Match')
 
 
 class UserLoginView(LoginView):
@@ -33,6 +36,11 @@ class UserRegistrationView(FormView):
                            bet_team=user.team,
                            bet_amt=300,
                            status='P')
+        completed = Match.objects.filter(
+            datetime__lt=timezone.localtime()).count()
+        if completed > 0:
+            user.curr_amt = F('curr_amt') - (completed * 20)
+            user.save()
         return super().form_valid(form)
 
 
