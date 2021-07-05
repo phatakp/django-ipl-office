@@ -1,0 +1,121 @@
+body {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-size: calc(10px + (19 - 14) * ((100vw - 300px) / (1600 - 300)));
+    line-height: calc(1em + (1.5 - 1.2) * ((100vh - 300px)/(1600 - 300)));
+    font-family: 'Dosis', sans-serif;
+    letter-spacing: 0.1em;
+    width: 100%;
+    height: 100%;
+}
+
+.navbar {
+    margin-top: 1em;
+    background: linear-gradient(45deg, #121212, #022020);
+    z-index: 1000;
+}
+
+.navbar .navbar-nav .active a {
+    color: chocolate !important;
+}
+
+
+.navbar-brand {
+    vertical-align: middle;
+    display: flex;
+    font-weight: 800;
+    font-size: 2em;
+    margin-top: 0.3em;
+    margin-right: 2em;
+}
+
+.navbar-brand:hover,
+.navbar-brand:focus,
+.navbar-nav li a:hover,
+.navbar-nav li a:focus {
+    color: chocolate !important;
+}
+
+.navbar-brand img {
+    width: 5em;
+    height: 2.5em;
+    margin-top: -1em;
+}
+
+.small {
+    text-transform: uppercase;
+    font-size: 0.5em !important;
+    color: chartreuse;
+}
+
+.navbar-nav li {
+    margin: 0 1em;
+}
+
+.navbar-nav a {
+    text-transform: uppercase;
+    font-weight: 500;
+    margin-top: 0.5em;
+}
+
+.navbar-nav a.login {
+    margin-top: 0;
+}
+
+#login-dp {
+    min-width: 20em;
+    padding: 1em 1em 0;
+    overflow: hidden;
+    background-color: rgba(43, 40, 40, 0.8);
+}
+
+#login-dp .help-block {
+    font-size: 1em;
+    margin-top: 0.5em;
+}
+
+#login-dp .bottom {
+    background-color: rgba(80, 69, 69, 0.8);
+    border-top: 1px solid rgb(51, 49, 49);
+    clear: both;
+    padding: 1em;
+    color: whitesmoke;
+}
+
+#login-dp .form-group {
+    margin-bottom: 1em;
+}
+
+@media(max-width:768px) {
+    #login-dp {
+        background-color: inherit;
+        color: #fff;
+    }
+
+    #login-dp .bottom {
+        background-color: inherit;
+        border-top: 0 none;
+    }
+}
+
+.btn {
+    border-radius: 1em;
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+    width: 12px;
+}
+
+::-webkit-scrollbar-track {
+    box-shadow: inset 0 0 6px rgba(149, 166, 173, 0.3);
+    -webkit-box-shadow: inset 0 0 6px rgba(70, 87, 92, 0.3);
+    border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+    border-radius: 10px;
+    box-shadow: inset 0 0 6px rgba(37, 34, 34, 0.5);
+    -webkit-box-shadow: inset 0 0 6px rgba(196, 110, 153, 0.9);
+}
