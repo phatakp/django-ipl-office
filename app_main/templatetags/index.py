@@ -51,11 +51,11 @@ def remain_count(user):
 
 @register.filter
 def ipl_winner_bet(user):
-    bet = Bet.objects.get(user=user, match__isnull=True)
+    # bet = Bet.objects.get(user=user, match__isnull=True)
+    bet = user.bets.get(match__isnull=True)
     return bet.win_amt if bet.status == 'W' else bet.lost_amt * -1
 
 
-@register.filter
 @register.filter
 def ipl_kitty(user):
     pool_amt = Static.objects.get(entry='Pool-Amount').value

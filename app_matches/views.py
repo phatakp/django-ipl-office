@@ -16,6 +16,16 @@ from app_admin.models import IPLStats
 
 Team = apps.get_model('app_main', 'Team')
 IPLHistory = apps.get_model('app_admin', 'IPLHistory')
+IPLStats = apps.get_model('app_admin', 'IPLStats')
+history = IPLHistory.objects.select_related(
+    'home_team',
+    'away_team',
+    'winner',
+    'bat_first').all()
+
+stats = IPLStats.objects.select_related(
+    'team',
+    'vs_team').all()
 
 
 class ScheduleView(ListView):
@@ -27,13 +37,7 @@ class ScheduleView(ListView):
         return Match.objects.select_related('home_team', 'away_team', 'winner')
 
     def get(self, request, *args, **kwargs):
-        extra_context = {'fix_active': '',
-                         'res_active': '',
-                         'sch_active': 'active',
-                         'dash_active': '',
-                         'home_active': '',
-                         'admin_active': '',
-                         'login_active': '',
+        extra_context = {'sch_active': 'active',
                          'form': MatchFilterForm(),
                          }
         if kwargs['typ'] == 'fix':
@@ -95,61 +99,83 @@ class MatchDetailView(LoginRequiredMixin, DetailView):
     login_url = reverse_lazy('app_users:login')
     redirect_field_name = 'match_detail.html'
 
-    def get(self, request, *args, **kwargs):
-        self.object = self.get_object()
-        context = self.get_context_data(**kwargs)
-        extra_context = {'form': BetForm(prefix=self.object),
-                         'winner_form': MatchWinnerForm(),
+    def get_queryset(self):
+        return Match.objects.select_related('home_team',
+                                            'away_team', 'winner').all()
+
+    def get_context_data(self, *args, **kwargs):
+        context = super().get_context_data(*args, **kwargs)
+        home_vs_stat = stats.filter(team=self.object.home_team,
+                                    vs_team=self.object.away_team).first()
+        away_vs_stat = stats.filter(team=self.object.away_team,
+                                    vs_team=self.object.home_team).first()
+        home_all_stat = stats.filter(team=self.object.home_team,
+                                     vs_team__isnull=True).first()
+        away_all_stat = stats.filter(team=self.object.away_team,
+                                     vs_team__isnull=True).first()
+
+        # Overall Stats
+        home_all_total_wins = self.total_win_pct(home_all_stat)
+        away_all_total_wins = self.total_win_pct(away_all_stat)
+        home_all_home_wins = self.home_win_pct(home_all_stat)
+        away_all_home_wins = self.home_win_pct(away_all_stat)
+        home_all_away_wins = self.away_win_pct(home_all_stat)
+        away_all_away_wins = self.away_win_pct(away_all_stat)
+        home_all_bat1st_wins = self.bat1st_win_pct(home_all_stat)
+        away_all_bat1st_wins = self.bat1st_win_pct(away_all_stat)
+
+        # Vs Stats
+        home_vs_total_wins = self.total_win_pct(home_vs_stat)
+        home_vs_home_wins = self.home_win_pct(home_vs_stat)
+        home_vs_away_wins = self.away_win_pct(home_vs_stat)
+        home_vs_bat1st_wins = self.bat1st_win_pct(home_vs_stat)
+        away_vs_bat1st_wins = self.bat1st_win_pct(away_vs_stat)
+
+        extra_context = {'form': BetForm(data=self.request.POST or None, prefix=self.object),
+                         'winner_form': MatchWinnerForm(self.request.POST or None),
                          'home_form_all': self.form_guide(self.object.home_team),
                          'away_form_all': self.form_guide(self.object.away_team),
                          'vs_form': self.form_guide(self.object.home_team, self.object.away_team),
                          'cutoff': self.object.datetime - timedelta(minutes=60),
-                         'home_total_wins': self.total_wins(self.object.home_team, self.object.away_team),
-                         'home_home_wins': self.home_wins(self.object.home_team, self.object.away_team),
-                         'home_away_wins': self.away_wins(self.object.home_team, self.object.away_team),
-                         'home_bat1st_wins': self.bat1st_wins(self.object.home_team, self.object.away_team),
-                         'away_bat1st_wins': self.bat1st_wins(self.object.away_team, self.object.home_team),
-                         'home_bat1st_chances': self.win_chances(self.object.home_team, self.object.away_team),
-                         'home_bat2nd_chances': self.win_chances(self.object.home_team, self.object.away_team, bat_first=False),
+                         'home_total_wins': home_vs_total_wins,
+                         'home_home_wins':  home_vs_home_wins,
+                         'home_away_wins': home_vs_away_wins,
+                         'home_bat1st_wins': home_vs_bat1st_wins,
+                         'away_bat1st_wins': away_vs_bat1st_wins,
+                         'home_all_total_wins': home_all_total_wins,
+                         'away_all_total_wins': away_all_total_wins,
+                         'home_all_home_wins':  home_all_home_wins,
+                         'away_all_home_wins':  away_all_home_wins,
+                         'home_all_away_wins': home_all_away_wins,
+                         'away_all_away_wins': away_all_away_wins,
+                         'home_all_bat1st_wins': home_all_bat1st_wins,
+                         'away_all_bat1st_wins': away_all_bat1st_wins,
+                         'home_bat1st_chances': self.win_chances([home_all_stat, away_all_stat], [home_vs_stat, away_vs_stat]),
+                         'home_bat2nd_chances': self.win_chances([home_all_stat, away_all_stat], [home_vs_stat, away_vs_stat], bat_first=False),
                          }
+
+        # Pagination for Match bets
+        extra_context.update(self.get_paginator(self.bets()))
 
         # Display Current bet if present
         if self.user_bet_for_match_exists():
-            bet = Bet.objects.get(user=request.user, match=self.object)
+            bet = self.request.user.bets.get(match=self.object)
             context['message'] = f'<strong>Current Prediction: {bet.bet_team.name}.</strong> <br> 10 points to be deducted if team changed.'
             context['msg_status'] = 'success'
         else:
             context['message'] = f'No Prediction made yet'
             context['msg_status'] = 'danger'
 
-        match_bets = self.bets()
-        extra_context.update(
-            {'match_bets': self.get_queryset_paginator(match_bets)})
-
         context.update(extra_context)
-        return self.render_to_response(context)
+        return context
 
     @transaction.atomic
     def post(self, request, *args, **kwargs):
         self.object = self.get_object()
         context = self.get_context_data(**kwargs)
-
-        form = BetForm(request.POST, prefix=self.object)
-        winner_form = MatchWinnerForm(request.POST)
-        extra_context = {'form': form,
-                         'winner_form': winner_form,
-                         'home_form_all': self.form_guide(self.object.home_team),
-                         'away_form_all': self.form_guide(self.object.away_team),
-                         'vs_form': self.form_guide(self.object.home_team, self.object.away_team),
-                         'cutoff': self.object.datetime - timedelta(minutes=60),
-                         'home_total_wins': self.total_wins(self.object.home_team, self.object.away_team),
-                         'home_home_wins': self.home_wins(self.object.home_team, self.object.away_team),
-                         'home_away_wins': self.away_wins(self.object.home_team, self.object.away_team),
-                         'home_bat1st_wins': self.bat1st_wins(self.object.home_team, self.object.away_team),
-                         'away_bat1st_wins': self.bat1st_wins(self.object.away_team, self.object.home_team),
-                         'home_bat1st_chances': self.win_chances(self.object.home_team, self.object.away_team),
-                         'home_bat2nd_chances': self.win_chances(self.object.home_team, self.object.away_team, bat_first=False),
-                         }
+        extra_context = {}
+        form = context['form']
+        winner_form = context['winner_form']
 
         if request.user.is_ipl_admin:
             # Match Winner Update Process
@@ -193,76 +219,42 @@ class MatchDetailView(LoginRequiredMixin, DetailView):
             extra_context.update({'message': msg,
                                   'msg_status': 'success' if status else 'danger'})
 
-        match_bets = self.bets()
-        extra_context.update(
-            {'match_bets': self.get_queryset_paginator(match_bets)})
-
         context.update(extra_context)
         return render(request, self.template_name, context)
 
     def user_bet_for_match_exists(self):
-        return Bet.objects.filter(user=self.request.user,
-                                  match=self.object, status='P').exists()
+        return self.request.user.bets.filter(match=self.object, status='P').exists()
 
     def form_guide(self, team1, team2=None):
         # Get list of latest 5 completed matches for the team
         if team2:
-            return IPLHistory.objects.filter(Q(home_team=team1, away_team=team2) |
-                                             Q(home_team=team2, away_team=team1)).exclude(winner__isnull=True).order_by('-date')[:5]
+            return history.filter(
+                Q(home_team=team1, away_team=team2) |
+                Q(home_team=team2, away_team=team1)).exclude(
+                winner__isnull=True).order_by('-date')[:5]
         else:
-            return IPLHistory.objects.filter(Q(home_team=team1) |
-                                             Q(away_team=team1)).exclude(winner__isnull=True).order_by('-date')[:5]
+            return history.filter(
+                Q(home_team=team1) |
+                Q(away_team=team1)).exclude(
+                winner__isnull=True).order_by('-date')[:5]
 
-    def total_wins(self, team1, team2):
+    def total_win_pct(self, stat):
         # Total Win Percentage
-        obj = IPLStats.objects.filter(
-            team=team1, vs_team=team2).values('all_matches', 'all_wins')
-        return int(obj[0]['all_wins']/obj[0]['all_matches']*100)
+        return int(stat.all_wins/stat.all_matches*100)
 
-    def home_wins(self, team1, team2=None):
+    def home_win_pct(self, stat):
         # Home Win Percentage
-        obj = IPLStats.objects.filter(
-            team=team1, vs_team=team2).values('home_matches', 'home_wins')
-        return int(obj[0]['home_wins']/obj[0]['home_matches']*100)
+        return int(stat.home_wins/stat.home_matches*100)
 
-    def away_wins(self, team1, team2=None):
+    def away_win_pct(self, stat):
         # Away Win Percentage
-        obj = IPLStats.objects.filter(
-            team=team1, vs_team=team2).values('away_matches', 'away_wins')
-        return int(obj[0]['away_wins']/obj[0]['away_matches']*100)
+        return int(stat.away_wins/stat.away_matches*100)
 
-    def bat1st_wins(self, team1, team2=None):
+    def bat1st_win_pct(self, stat):
         # Win Percentage while batting first
-        obj = IPLStats.objects.filter(
-            team=team1, vs_team=team2).values('all_wins', 'bat_1st_wins')
-        return int(obj[0]['bat_1st_wins']/obj[0]['all_wins']*100)
+        return int(stat.bat_1st_wins/stat.all_wins*100)
 
-    def bets(self):
-        if self.object.isWithinBetCutoff:
-            return Bet.objects.filter(user=self.request.user, match=self.object).select_related('user',
-                                                                                                'match',
-                                                                                                'bet_team')
-
-        else:
-            return Bet.objects.filter(match=self.object).select_related('user',
-                                                                        'match',
-                                                                        'bet_team').order_by('create_time')
-
-    def get_queryset_paginator(self, match_bets):
-        paginator = Paginator(match_bets, 10)
-        page = self.request.GET.get('page')
-
-        try:
-            page_obj = paginator.page(page)
-            return page_obj
-        except PageNotAnInteger:
-            page_obj = paginator.page(1)
-            return page_obj
-        except EmptyPage:
-            page_obj = paginator.page(paginator.num_pages)
-            return page_obj
-
-    def win_chances(self, team1, team2, bat_first=True):
+    def win_chances(self, overall, versus, bat_first=True):
 
         def weighted_formula(last5_wins, bat_wins, all_wins, all_matches, home_wins, home_matches):
             # Average of (35% of LATEST_WIN_PCT) + (25% of BAT_1_OR_2_WIN_PCT) + (25% of HOME_WIN_PCT) + (15% of ALL_WIN_PCT)
@@ -274,23 +266,48 @@ class MatchDetailView(LoginRequiredMixin, DetailView):
 
         # Predict Win Chances while Batting first and Second w.r.t team as home team
         team_avg = dict()
-        for t1 in (team1, team2):
-            overall = IPLStats.objects.get(team=t1, vs_team__isnull=True)
-            overall_avg = weighted_formula(overall.last5_wins,
-                                           overall.bat_1st_wins if bat_first else overall.bat_2nd_wins,
-                                           overall.all_wins, overall.all_matches,
-                                           overall.home_wins, overall.home_matches)
-            for t2 in (team1, team2):
-                if t1 != t2:
-                    versus = IPLStats.objects.get(team=t1, vs_team=t2)
-                    versus_avg = weighted_formula(versus.last5_wins,
-                                                  versus.bat_1st_wins if bat_first else versus.bat_2nd_wins,
-                                                  versus.all_wins, versus.all_matches,
-                                                  versus.home_wins, versus.home_matches)
+        for i in range(2):
+            overall_avg = weighted_formula(overall[i].last5_wins,
+                                           overall[i].bat_1st_wins if bat_first else overall[i].bat_2nd_wins,
+                                           overall[i].all_wins, overall[i].all_matches,
+                                           overall[i].home_wins, overall[i].home_matches)
+            versus_avg = weighted_formula(versus[i].last5_wins,
+                                          versus[i].bat_1st_wins if bat_first else versus[i].bat_2nd_wins,
+                                          versus[i].all_wins, versus[i].all_matches,
+                                          versus[i].home_wins, versus[i].home_matches)
 
-                    # Get average win for a team
-                    team_avg[t1] = (overall_avg + versus_avg)/2
+            # Get average win for a team
+            team_avg[str(i)] = (overall_avg + versus_avg)/2
 
         # Get ratio of both team average wins
-        frac = team_avg[team1]/team_avg[team2]
+        frac = team_avg['0']/team_avg['1']
         return int(100 - (100/(1+frac)))
+
+    def get_paginator(self, bets):
+        paginator = Paginator(bets, 10)
+        page = self.request.GET.get('page', 1)
+
+        try:
+            context_dict = {'page_obj': paginator.page(page),
+                            }
+        except PageNotAnInteger:
+            context_dict = {'page_obj': paginator.page(1)}
+        except EmptyPage:
+            context_dict = {'page_obj': paginator.page(paginator.num_pages)}
+        finally:
+            context_dict.update({
+                'paginator': paginator,
+                'is_paginated': True
+            })
+            return context_dict
+
+    def bets(self):
+        if self.object.isWithinBetCutoff:
+            return self.object.match_bets(user=self.request.user).select_related('user',
+                                                                                 'match',
+                                                                                 'bet_team')
+
+        else:
+            return self.object.match_bets.select_related('user',
+                                                         'match',
+                                                         'bet_team')

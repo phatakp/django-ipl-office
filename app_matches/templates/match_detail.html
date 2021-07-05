@@ -334,25 +334,25 @@
                                     </tr>
                                     {% else %}
                                     <tr class="rows">
-                                        
+
                                         {% if match.home_team_score %}
                                         <td class="colm-1" style="color:{{match.home_team.back_color}};">
                                             {{match.home_team_score}} overs</td>
                                         {% else %}
-                                        <td class="colm-1" style="color:{{match.home_team.back_color}};">-</td>    
+                                        <td class="colm-1" style="color:{{match.home_team.back_color}};">-</td>
                                         {% endif %}
-                                        
+
                                         <td class="colm-2">Score</td>
-                                        
-                                        
+
+
                                         {% if match.away_team_score %}
                                         <td class="colm-3" style="color:{{match.away_team.back_color}};">
                                             {{match.away_team_score}} overs</td>
                                         {% else %}
-                                        <td class="colm-3" style="color:{{match.away_team.back_color}};">-</td>    
+                                        <td class="colm-3" style="color:{{match.away_team.back_color}};">-</td>
                                         {% endif %}
-                                            
-                                        
+
+
                                     </tr>
                                     {% endif %}
                                 </tbody>
@@ -391,7 +391,7 @@
                                 </thead>
                                 <tbody>
 
-                                    {% for bet in match_bets %}
+                                    {% for bet in page_obj %}
 
 
                                     <tr class="rows">
@@ -422,46 +422,49 @@
 
                                     </tr>
                                     {% if match.isWithinBetCutoff %}
-                                     <tr class="rows">
-                                        <td colspan=5>Other predictions TBD past {{cutoff|time:"h:i A"}} IST on Match day</td>
-                                    </tr>   
+                                    <tr class="rows">
+                                        <td colspan=5>Other predictions TBD past {{cutoff|time:"h:i A"}} IST on Match
+                                            day</td>
+                                    </tr>
                                     {% endif %}
                                     {% empty %}
                                     <tr class="rows">
                                         <td colspan=5>No predictions made yet</td>
-                                    </tr>  
+                                    </tr>
                                     {% endfor %}
-                                    
-                                    
+
+
                                     {% if match.is_abandoned %}
-                                      <tr class="rows">
-                                        <td colspan=5 class="text-success">All points for this match moved to IPL kitty</td>
-                                    </tr>  
+                                    <tr class="rows">
+                                        <td colspan=5 class="text-success">All points for this match moved to IPL kitty
+                                        </td>
+                                    </tr>
                                     {% endif %}
-                                        
-                                        
+
+
                                 </tbody>
                             </table>
-                            {% if match_bets %}
+                            {% if is_paginated %}
                             <nav aria-label="Page navigation example">
                                 <ul class="pagination pagination-template d-flex justify-content-center">
-                                    {% if match_bets.has_previous %}
-                                    <li class="page-item"><a href="?page={{match_bets.previous_page_number}}"
+                                    {% if page_obj.has_previous %}
+                                    <li class="page-item"><a href="?page={{page_obj.previous_page_number}}"
                                             class="page-link text-secondary"> <i class="fa fa-angle-left"></i></a></li>
-                                    <li class="page-item"><a href="?page={{match_bets.previous_page_number}}"
-                                            class="page-link text-secondary">{{ match_bets.previous_page_number }}</a></li>
+                                    <li class="page-item"><a href="?page={{page_obj.previous_page_number}}"
+                                            class="page-link text-secondary">{{ page_obj.previous_page_number }}</a>
+                                    </li>
                                     {% else %}
                                     <li class="page-item"><a href="#" class="page-link text-default disabled"> <i
                                                 class="fa fa-angle-left"></i></a>
                                     </li>
                                     {% endif %}
                                     <li class="page-item"><a href="#"
-                                            class="page-link active text-white"><strong>{{ match_bets.number }}</strong>
+                                            class="page-link active text-white"><strong>{{ page_obj.number }}</strong>
                                             <span class="sr-only">(current)</span></a></li>
-                                    {% if match_bets.has_next %}
-                                    <li class="page-item"><a href="?page={{match_bets.next_page_number}}"
-                                            class="page-link text-secondary">{{ match_bets.next_page_number }}</a></li>
-                                    <li class="page-item"><a href="?page={{match_bets.next_page_number}}"
+                                    {% if page_obj.has_next %}
+                                    <li class="page-item"><a href="?page={{page_obj.next_page_number}}"
+                                            class="page-link text-secondary">{{ page_obj.next_page_number }}</a></li>
+                                    <li class="page-item"><a href="?page={{page_obj.next_page_number}}"
                                             class="page-link text-secondary"> <i class="fa fa-angle-right"></i></a></li>
                                     {% else %}
                                     <li class="page-item"><a href="#" class="page-link text-default disabled"> <i

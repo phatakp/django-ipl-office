@@ -36,6 +36,9 @@ class CustomUserManager(BaseUserManager):
             raise ValueError(_('Superuser must have is_superuser=True.'))
         return self.create_user(email, password, **extra_fields)
 
+    def get_queryset(self):
+        return super().get_queryset().select_related('team')
+
 
 class CustomUser(AbstractUser):
     username = None
@@ -59,6 +62,29 @@ class CustomUser(AbstractUser):
 
     def __str__(self):
         return self.name
+
+    @property
+    def form_guide(self):
+        from itertools import chain
+        played = self.bets.exclude(
+            models.Q(match__isnull=True) |
+            models.Q(match__status='S')).order_by('-match__num')[:5]
+
+        if played.count() < 5:
+            return chain(CustomUser.objects.all()[:5-played.count()], played)
+        return played
+
+    @property
+    def bets(self):
+        return self.user_bets.select_related('user__team',
+                                             'match__home_team',
+                                             'match__away_team',
+                                             'match__winner',
+                                             'bet_team').order_by('-create_time')
+
+    @property
+    def bet_count(self):
+        return self.bets.count() - 1
 
 
 class TeamChangeAudit(models.Model):

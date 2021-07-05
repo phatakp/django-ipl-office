@@ -147,7 +147,7 @@ class Bet(models.Model):
                              on_delete=models.CASCADE)
 
     match = models.ForeignKey('Match',
-                              related_name="matches",
+                              related_name="match_bets",
                               on_delete=models.CASCADE,
                               blank=True, null=True)
 
