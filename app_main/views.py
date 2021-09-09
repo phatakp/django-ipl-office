@@ -132,82 +132,6 @@ class DashboardView(LoginRequiredMixin, ListView):
             })
             return context_dict
 
-    # def get(self, request, *args, **kwargs):
-    #     self.object_list = self.get_queryset()
-    #     context = self.get_context_data(**kwargs)
-    #     extra_context = {'sch_active': '',
-    #                      'dash_active': 'active',
-    #                      'home_active': '',
-    #                      'admin_active': '',
-    #                      'rule_active': '',
-    #                      'login_active': '',
-    #                      }
-
-        # Completed Match Count
-        # match_count = Match.objects.exclude(status='S').count()
-        # extra_context.update({'match_count': match_count})
-
-        # Current User Rank
-        # for i, cuser in enumerate(self.object_list):
-        #     if cuser == request.user:
-        #         extra_context.update({'user_rank': i+1})
-
-        # Current User Bets
-        # bets = Bet.objects.filter(user=request.user).select_related('user',
-        #                                                             'match', 'bet_team')
-        # extra_context.update({'bets': bets})
-
-        # Number of Bets Placed
-        # bet_count = bets.exclude(match__isnull=True).count()
-        # extra_context.update({'bet_count': bet_count})
-
-        # Total Amount won in bets
-        # amt_won = bets.aggregate(tot_win=Sum('win_amt'))['tot_win']
-        # extra_context.update({'amt_won': amt_won})
-
-        # Total Amount lost in bets
-        # amt_lost = bets.aggregate(tot_lost=Sum('lost_amt'))['tot_lost']
-        # extra_context.update({'amt_lost': amt_lost})
-
-        # Next Scheduled Match
-        # next_match = Match.objects.filter(datetime__gt=timezone.localtime(),
-        #                                   status='S').order_by('num')[0]
-        # extra_context.update({'next_match': next_match})
-
-        # IPL Final Completed Flag
-        # final_completed = Match.objects.get(typ='F').is_completed
-        # extra_context.update({'final_completed': final_completed})
-
-        # Pagination for Users and  Bet History
-    #     extra_context.update({'bets': self.get_queryset_paginator(queryset=bets,
-    #                                                               page_obj='pred_page')})
-    #     extra_context.update({'users': self.get_queryset_paginator(queryset=self.object_list,
-    #                                                                page_obj='user_page')})
-
-    #     context.update(extra_context)
-    #     return self.render_to_response(context)
-
-    # def get_queryset_paginator(self, queryset, page_obj):
-    #     if page_obj == 'user_page':
-    #         user_paginator = Paginator(queryset, 10)
-    #         user_page_num = self.request.GET.get(page_obj)
-    #         return self.get_page_objects(user_paginator, user_page_num)
-    #     if page_obj == 'pred_page':
-    #         bet_paginator = Paginator(queryset, 10)
-    #         bet_page_num = self.request.GET.get(page_obj)
-    #         return self.get_page_objects(bet_paginator, bet_page_num)
-
-    # def get_page_objects(self, paginator, page_num):
-    #     try:
-    #         page_obj = paginator.page(page_num)
-    #         return page_obj
-    #     except PageNotAnInteger:
-    #         page_obj = paginator.page(1)
-    #         return page_obj
-    #     except EmptyPage:
-    #         page_obj = paginator.page(paginator.num_pages)
-    #         return page_obj
-
 
 class TeamChangeView(LoginRequiredMixin, FormView):
     model = CustomUser
@@ -236,7 +160,7 @@ class TeamChangeView(LoginRequiredMixin, FormView):
         complete_count = Match.objects.exclude(status='S').count()
 
         # No amount to be deducted when bet changed within first 12 matches
-        if complete_count < 12:
+        if complete_count < 30:
             change_amt = 0
         else:
             change_amt = complete_count*5

@@ -3,6 +3,7 @@ import os
 from django.apps import apps
 from django.conf import settings
 from django.db import transaction
+from django.db.models import F
 from django.shortcuts import render
 from django.views.generic import TemplateView
 
@@ -19,6 +20,7 @@ from .functions import (valid_row, match_date_time, match_no, match_team, match_
 
 Team = apps.get_model('app_main', 'Team')
 Match = apps.get_model('app_matches', 'Match')
+Bet = apps.get_model('app_matches', 'Bet')
 
 
 class MainView(TemplateView):
@@ -39,14 +41,23 @@ class MainView(TemplateView):
         elif task == 'stats':
             return self.upload_stats_table()
 
+    def delete_bets(self):
+        bets = Bet.objects.filter(match__num__gt=29)
+        for bet in bets:
+            bet.user.curr_amt = F('curr_amt') + bet.bet_amt
+            bet.user.save(update_fields=['curr_amt'])
+            bet.delete()
+
     @transaction.atomic
     def upload_match_table(self):
         # Clear the Match Table
-        Match.objects.all().delete()
+        # Match.objects.all().delete()
+        self.delete_bets()
+        Match.objects.filter(num__gt=29).delete()
         records = []
 
         excel_path = os.path.join(
-            settings.BASE_DIR, 'Matches.xlsx')
+            settings.BASE_DIR, 'Matches1.xlsx')
         wb = openpyxl.load_workbook(excel_path)
         ws = wb.active
 

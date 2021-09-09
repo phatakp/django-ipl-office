@@ -28,8 +28,7 @@ class BetForm(forms.ModelForm):
         model = Bet
         fields = ('bet_amt', )
         labels = {'bet_amt': "Amount", }
-        widgets = {'bet_amt': forms.TextInput(
-            attrs={'placeholder': 'Bet Amount'})}
+        widgets = {'bet_amt': forms.HiddenInput()}
 
 
 class MatchWinnerForm(forms.ModelForm):

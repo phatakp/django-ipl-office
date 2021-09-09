@@ -303,9 +303,9 @@ class MatchDetailView(LoginRequiredMixin, DetailView):
 
     def bets(self):
         if self.object.isWithinBetCutoff:
-            return self.object.match_bets(user=self.request.user).select_related('user',
-                                                                                 'match',
-                                                                                 'bet_team')
+            return self.object.match_bets.filter(user=self.request.user).select_related('user',
+                                                                                        'match',
+                                                                                        'bet_team')
 
         else:
             return self.object.match_bets.select_related('user',
