@@ -320,6 +320,72 @@ div.draw {
     line-height: 1.2em;
 }
 
+.pagination {
+    width: 100%;
+    text-align: center;
+    background: linear-gradient(45deg, #414040, #033030);
+    padding: 0.2em 0;
+    display: flex;
+    justify-content: center;
+}
+
+
+.pagination .page-link {
+    width: 2.5em;
+    height: 2.5em;
+    border-radius: 50%;
+    background-color: #033003;
+    color: white;
+    text-align: center;
+    margin: 0 0.5em;
+}
+
+.pagination .page-item:first-child .page-link,
+.pagination .page-item:last-child .page-link {
+    border: none;
+    outline: none;
+    background: none;
+    color: white;
+}
+
+.pagination .page-link.disabled {
+    background-color: #bdc0c0;
+    color: rgb(145, 141, 141) !important;
+
+}
+
+.pagination .page-item:first-child .page-link {
+    border-top-left-radius: 1em !important;
+    border-bottom-left-radius: 1em !important;
+    border-top-right-radius: 0 !important;
+    border-bottom-right-radius: 0 !important;
+
+}
+
+.pagination .page-item:last-child .page-link {
+    border-top-left-radius: 0 !important;
+    border-bottom-left-radius: 0 !important;
+    border-top-right-radius: 1em !important;
+    border-bottom-right-radius: 1em !important;
+
+}
+
+.pagination .page-link:hover {
+    color: ivory;
+    background-color: #033030 !important;
+}
+
+.pagination .page-link.disabled:hover {
+    background-color: transparent !important;
+    cursor: default;
+}
+
+
+.pagination .page-link.active {
+    background-color: #ac5a0d;
+    color: yellow;
+}
+
 @media only screen and (min-width: 701px) and (max-width:1100px) {
     .players-section {
         margin-top: 15em;
